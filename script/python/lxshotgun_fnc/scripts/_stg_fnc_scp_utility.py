@@ -307,13 +307,11 @@ def set_asset_look_pass_update(rsv_task_properties):
                     look_pass=i_look_pass_name
                 )
             )
-            i_render_mov_sub_file = utl_dcc_objects.OsFile(i_render_mov_sub_file_path)
-            if i_render_mov_sub_file.get_is_exists() is False or force is True:
-                stg_operators.ImageOpt(
-                    i_beauty_image_file
-                ).set_convert_to(
-                    i_render_mov_sub_file_path, color_space=color_space
-                )
+            stg_operators.ImageOpt(
+                i_beauty_image_file
+            ).set_convert_to(
+                i_render_mov_sub_file_path, color_space=color_space
+            )
             #
             i_render_jpg_sub_file_unit = rsv_task.get_rsv_unit(keyword='asset-render-jpg-sub-file')
             i_render_jpg_sub_file_path = i_render_jpg_sub_file_unit.get_result(

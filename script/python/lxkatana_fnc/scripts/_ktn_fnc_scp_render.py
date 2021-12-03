@@ -151,7 +151,7 @@ def set_asset_render_scene_create(rsv_task_properties):
     version = rsv_task_properties.get('version')
     #
     result = _ktn_fnc_scp_utility.set_asset_workspace_create(
-        rsv_task_properties
+        rsv_task_properties, use_preview_look_pass=False
     )
     if result is True:
         ktn_fnc_builders.AssetBuilder(

@@ -142,6 +142,8 @@ def set_fnc_methods_run_by_assets_katana_scene_src(option):
 def set_fnc_methods_run_by_asset_katana_scene_src(option):
     from lxbasic import bsc_core
     #
+    from lxutil import utl_core
+    #
     import lxutil_fnc.objects as utl_fnc_objects
     #
     import lxresolver.commands as rsv_commands
@@ -157,10 +159,15 @@ def set_fnc_methods_run_by_asset_katana_scene_src(option):
         entity_path = methods_loader.get_entity_obj_path()
         method_paths = methods_loader.get_entity_method_obj_paths(entity_path)
         sorted_method_paths = methods_loader.get_sorted_objs(method_paths)
-        for i_method_path in sorted_method_paths:
-            i_method = methods_loader.get_method(i_method_path)
-            if i_method is not None:
-                i_method._set_export_debug_run_()
+        if sorted_method_paths:
+            g_p = utl_core.GuiProgressesRunner(maximum=len(sorted_method_paths))
+            for i_method_path in sorted_method_paths:
+                g_p.set_update()
+                i_method = methods_loader.get_method(i_method_path)
+                if i_method is not None:
+                    i_method._set_export_debug_run_()
+            #
+            g_p.set_stop()
 
 
 def set_copy_publish_to_work_batch_run(option):
