@@ -294,7 +294,7 @@ def set_asset_look_preview_import(rsv_task_properties):
                     project=project,
                     asset=asset,
                     #
-                    # with_surface_geometry_uv_map=True,
+                    with_surface_geometry_uv_map=True,
                     with_surface_look_preview=True,
                 )
             ).set_run()

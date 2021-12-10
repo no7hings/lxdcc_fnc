@@ -63,8 +63,9 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
                     ).get_pass_names()
             else:
                 look_klf_file_path = rsv_asset_look_query.get_klf_file()
-                element_names = bsc_core.StorageZipFileOpt(look_klf_file_path).get_element_names()
-                look_pass_names = [os.path.splitext(i)[0] for i in fnmatch.filter(element_names, '*.klf')]
+                if look_klf_file_path:
+                    element_names = bsc_core.StorageZipFileOpt(look_klf_file_path).get_element_names()
+                    look_pass_names = [os.path.splitext(i)[0] for i in fnmatch.filter(element_names, '*.klf')]
             #
             if look_pass_names:
                 g_p = utl_core.GuiProgressesRunner(maximum=len(look_pass_names))

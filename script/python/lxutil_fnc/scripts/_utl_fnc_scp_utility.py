@@ -69,7 +69,7 @@ def set_asset_export_by_work_maya_scene_src_file(option):
                 ).get_is_exists_file() is True:
                     return
                 else:
-                    set_asset_export_by_maya_scene_src_file(
+                    set_asset_publish_by_maya_scene_src(
                         option='file={}'.format(maya_scene_src_file_path)
                     )
                 return
@@ -78,12 +78,12 @@ def set_asset_export_by_work_maya_scene_src_file(option):
         #
         maya_scene_src_file_path = maya_scene_src_file_unit.get_result(version=new_version)
         work_maya_scene_src_file.set_copy_to_file(maya_scene_src_file_path)
-        set_asset_export_by_maya_scene_src_file(
+        set_asset_publish_by_maya_scene_src(
             option='file={}'.format(maya_scene_src_file_path)
         )
 
 
-def set_asset_export_by_maya_scene_src_file(option):
+def set_asset_publish_by_maya_scene_src(option):
     from lxbasic import bsc_core
     #
     import lxutil_fnc.objects as utl_fnc_objects
@@ -99,11 +99,8 @@ def set_asset_export_by_maya_scene_src_file(option):
     if rsv_task_properties:
         rsv_task_properties.set('option.version', rsv_task_properties.get('version'))
         methods_loader = utl_fnc_objects.TaskMethodsLoader(rsv_task_properties)
-
         entity_path = methods_loader.get_entity_obj_path()
-
         method_paths = methods_loader.get_entity_method_obj_paths(entity_path)
-
         if method_paths:
             sorted_method_paths = methods_loader.get_sorted_objs(method_paths)
             for i_method_path in sorted_method_paths:
@@ -134,12 +131,12 @@ def set_fnc_methods_run_by_assets_katana_scene_src(option):
             katana_scene_src_src_file_unit = rsv_task.get_rsv_unit(keyword='asset-katana-scene-src-file')
             katana_scene_src_src_file_path = katana_scene_src_src_file_unit.get_result(version='latest')
             if katana_scene_src_src_file_path:
-                set_fnc_methods_run_by_asset_katana_scene_src(
+                set_asset_publish_by_katana_scene_src(
                     option='file={}'.format(katana_scene_src_src_file_path)
                 )
 
 
-def set_fnc_methods_run_by_asset_katana_scene_src(option):
+def set_asset_publish_by_katana_scene_src(option):
     from lxbasic import bsc_core
     #
     from lxutil import utl_core

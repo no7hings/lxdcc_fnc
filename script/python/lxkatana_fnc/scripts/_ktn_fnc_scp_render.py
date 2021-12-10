@@ -65,6 +65,14 @@ def set_render_export_by_any_scene_file(option):
                         td_enable=td_enable,
                         #
                         user=user, time_tag=time_tag
+                    ),
+                    job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
+                        [
+                            # maya-camera-create
+                            ddl_objects.DdlRsvTaskQuery(
+                                'maya-camera-export', rsv_task_properties
+                            ).get_method_option(),
+                        ]
                     )
                 )
                 katana_render_scene_create.set_run_with_deadline()

@@ -196,7 +196,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                             resolver = rsv_commands.get_resolver()
                             for i_step, i_task in [
                                 ('mod', 'modeling'),
-                                ('rig', 'rigging'),
+                                # ('rig', 'rigging'),
                             ]:
                                 i_kwargs = copy.copy(rsv_task_properties.value)
                                 i_kwargs['step'] = i_step
