@@ -31,6 +31,9 @@ def set_look_export_by_any_scene_file(option):
         #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
+        #
+        force = option_opt.get('force') or False
+        #
         rsv_task_properties.set('user', user)
         rsv_task_properties.set('time_tag', time_tag)
         #
@@ -60,7 +63,7 @@ def set_look_export_by_any_scene_file(option):
                     #
                     with_look_ass = option_opt.get('with_look_ass') or False
                     if with_look_ass is True:
-                        set_asset_look_ass_export(rsv_task_properties)
+                        set_asset_look_ass_export(rsv_task_properties, force)
                     #
                     with_look_properties_usd = option_opt.get('with_look_properties_usd') or False
                     if with_look_properties_usd is True:

@@ -30,6 +30,9 @@ def set_look_export_by_any_scene_file(option):
         #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
+        #
+        force = option_opt.get('force') or False
+        #
         rsv_task_properties.set('user', user)
         rsv_task_properties.set('time_tag', time_tag)
         #
@@ -53,8 +56,6 @@ def set_look_export_by_any_scene_file(option):
                     with_texture_tx = option_opt.get('with_texture_tx') or False
                     if with_texture_tx is True:
                         _ktn_fnc_scp_texture.set_asset_texture_tx_export(rsv_task_properties)
-                #
-                force = option_opt.get('force') or False
                 #
                 with_look_ass = option_opt.get('with_look_ass') or False
                 if with_look_ass is True:
@@ -109,13 +110,13 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
     #
     version = rsv_task_properties.get('option.version')
     #
-    look_ass_file_path = rsv_operators.RsvAssetLookQuery(rsv_task_properties).get_ass_file(
+    default_look_ass_file_path = rsv_operators.RsvAssetLookQuery(rsv_task_properties).get_ass_file(
         version=version
     )
-    default_look_ass_file = utl_dcc_objects.OsFile(look_ass_file_path)
+    default_look_ass_file = utl_dcc_objects.OsFile(default_look_ass_file_path)
     if default_look_ass_file.get_is_exists() is False or force is True:
         ktn_fnc_exporters.LookAssExporter(
-            file_path=look_ass_file_path,
+            file_path=default_look_ass_file_path,
             root='/master',
             option=dict(
                 output_obj='/rootNode/default__property_assigns_merge'
@@ -124,7 +125,7 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
     else:
         utl_core.Log.set_module_warning_trace(
             'katana-look-ass-export',
-            u'file="{}" is exists'.format(look_ass_file_path)
+            u'file="{}" is exists'.format(default_look_ass_file_path)
         )
     #
     ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
@@ -135,6 +136,7 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
             i_look_ass_file_path = rsv_operators.RsvAssetLookQuery(rsv_task_properties).get_ass_sub_file(
                 look_pass=i_look_pass_name, version=version
             )
+            #
             i_look_ass_file = utl_dcc_objects.OsFile(i_look_ass_file_path)
             if i_look_ass_file.get_is_exists() is False or force is True:
                 i_look_pass_source_obj = ktn_workspace.get_pass_source_obj(i_look_pass_name)

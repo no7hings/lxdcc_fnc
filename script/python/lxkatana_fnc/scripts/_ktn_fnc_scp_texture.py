@@ -34,8 +34,6 @@ def set_asset_texture_tx_export(task_properties, force=False):
             version=version
         )
         #
-
-        #
         ktn_fnc_exporters.TextureExporter(
             src_dir_path=texture_src_directory_path,
             tgt_dir_path=texture_tgt_directory_path,

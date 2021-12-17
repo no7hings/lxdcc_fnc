@@ -14,8 +14,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         import lxmaya.dcc.dcc_objects as maya_dcc_objects
         #
-        task_properties = self.task_properties
-        root = task_properties.get('dcc.root')
+        rsv_task_properties = self.task_properties
+        root = rsv_task_properties.get('dcc.root')
         #
         if maya_dcc_objects.Scene.get_scene_is_dirty():
             w = utl_core.DialogWindow.set_create(
@@ -52,8 +52,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         rsv_task_properties = self.task_properties
         #
-        user = utl_core.System.get_user_name()
-        time_tag = utl_core.System.get_time_tag()
+        user = rsv_task_properties.get('user') or utl_core.System.get_user_name()
+        time_tag = rsv_task_properties.get('time_tag') or utl_core.System.get_time_tag()
         #
         task = rsv_task_properties.get('task')
         #

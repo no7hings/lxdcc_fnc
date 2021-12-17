@@ -207,3 +207,4 @@ def set_asset_geometry_uv_maps_import(rsv_task_properties):
                     uv_map_face_vertices_contrast=True,
                 )
             ).set_run()
+

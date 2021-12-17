@@ -13,4 +13,7 @@ from ._mya_fnc_scp_camera import *
 
 from ._mya_fnc_scp_render import *
 
+from ._mya_fnc_scp_proxy import *
+
+
 

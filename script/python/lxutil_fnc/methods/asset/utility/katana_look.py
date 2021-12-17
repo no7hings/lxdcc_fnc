@@ -106,8 +106,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         rsv_task_properties = self.task_properties
         #
-        user = utl_core.System.get_user_name()
-        time_tag = utl_core.System.get_time_tag()
+        user = rsv_task_properties.get('user') or utl_core.System.get_user_name()
+        time_tag = rsv_task_properties.get('time_tag') or utl_core.System.get_time_tag()
         #
         branch = rsv_task_properties.get('branch')
         step = rsv_task_properties.get('step')
@@ -118,7 +118,12 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             elif scheme == 'publish':
                 self.__set_katana_look_export_(user, time_tag)
                 self.__set_katana_render_export_(user, time_tag)
+                #
+                self.__set_maya_scene_export_(user, time_tag)
+                #
                 self.__set_maya_look_export_(user, time_tag)
+                #
+                self.__set_maya_proxy_export_(user, time_tag)
 
     def __set_katana_look_export_(self, user, time_tag):
         import lxdeadline.objects as ddl_objects
@@ -201,6 +206,53 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             )
             katana_render_export.set_run_with_deadline()
 
+    def __set_maya_scene_export_(self, user, time_tag):
+        from lxdeadline import ddl_core
+        #
+        import lxdeadline.objects as ddl_objects
+        #
+        import lxdeadline.methods as ddl_methods
+        #
+        import lxresolver.operators as rsv_operators
+        #
+        rsv_task_properties = self.task_properties
+        #
+        version = rsv_task_properties.get('option.version')
+        #
+        rsv_asset_scene_query = rsv_operators.RsvAssetSceneQuery(rsv_task_properties)
+        #
+        maya_scene_src_file_path = rsv_asset_scene_query.get_maya_src_file(
+            version=version
+        )
+        maya_scene_export_query = ddl_objects.DdlRsvTaskQuery(
+            'maya-scene-export', rsv_task_properties
+        )
+        # maya-scene
+        maya_scene_export = ddl_methods.DdlRsvTaskMethodRunner(
+            method_option=maya_scene_export_query.get_method_option(),
+            script_option=maya_scene_export_query.get_script_option(
+                file=maya_scene_src_file_path,
+                create_scene_src=True,
+                with_scene=True,
+                with_texture_tx=True,
+                #
+                user=user, time_tag=time_tag,
+            ),
+            job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
+                [
+                    # katana-geometry
+                    ddl_objects.DdlRsvTaskQuery(
+                        'katana-geometry-export', rsv_task_properties
+                    ).get_method_option(),
+                    # katana-look
+                    ddl_objects.DdlRsvTaskQuery(
+                        'katana-look-export', rsv_task_properties
+                    ).get_method_option(),
+                ]
+            )
+        )
+        maya_scene_export.set_run_with_deadline()
+
     def __set_maya_look_export_(self, user, time_tag):
         from lxdeadline import ddl_core
         #
@@ -208,80 +260,82 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         import lxdeadline.methods as ddl_methods
         #
-        import lxresolver.commands as rsv_commands
+        import lxresolver.operators as rsv_operators
+        #
+        rsv_task_properties = self.task_properties
+        #
+        version = rsv_task_properties.get('option.version')
+        #
+        rsv_asset_scene_query = rsv_operators.RsvAssetSceneQuery(rsv_task_properties)
+        #
+        maya_scene_src_file_path = rsv_asset_scene_query.get_maya_src_file(
+            version=version
+        )
+        #
+        maya_look_export_query = ddl_objects.DdlRsvTaskQuery(
+            'maya-look-export', rsv_task_properties
+        )
+        #
+        maya_look_export = ddl_methods.DdlRsvTaskMethodRunner(
+            method_option=maya_look_export_query.get_method_option(),
+            script_option=maya_look_export_query.get_script_option(
+                file=maya_scene_src_file_path,
+                with_look_ass=True,
+                with_texture_tx=True,
+                #
+                user=user, time_tag=time_tag,
+            ),
+            job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
+                [
+                    # maya-scene
+                    ddl_objects.DdlRsvTaskQuery(
+                        'maya-scene-export', rsv_task_properties
+                    ).get_method_option(),
+                ]
+            )
+        )
+        maya_look_export.set_run_with_deadline()
+
+    def __set_maya_proxy_export_(self, user, time_tag):
+        from lxdeadline import ddl_core
+        #
+        import lxdeadline.objects as ddl_objects
+        #
+        import lxdeadline.methods as ddl_methods
         #
         import lxresolver.operators as rsv_operators
         #
         rsv_task_properties = self.task_properties
         #
-        project = rsv_task_properties.get('project')
-        asset = rsv_task_properties.get('asset')
-        step = rsv_task_properties.get('step')
-        task = rsv_task_properties.get('task')
         version = rsv_task_properties.get('option.version')
         #
-        rsv_asset_scene_query = rsv_operators.RsvAssetSceneQuery(rsv_task_properties)
-        # export ass-sequence(s)
-        if step in ['srf']:
-            if task in ['surfacing']:
-                resolver = rsv_commands.get_resolver()
-                rsv_model_act_task = resolver.get_rsv_task(
-                    project=project,
-                    asset=asset,
-                    step='mod',
-                    task='mod_dynamic'
-                )
-                if rsv_model_act_task is not None:
-                    maya_scene_src_file_path = rsv_asset_scene_query.get_maya_src_file(
-                        version=version
-                    )
-                    maya_scene_export_query = ddl_objects.DdlRsvTaskQuery(
-                        'maya-scene-export', rsv_task_properties
-                    )
+        maya_scene_src_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_maya_src_file(
+            version=version
+        )
+        # maya proxy export
+        maya_proxy_export_query = ddl_objects.DdlRsvTaskQuery(
+            'maya-proxy-export', rsv_task_properties
+        )
+        #
+        maya_proxy_export = ddl_methods.DdlRsvTaskMethodRunner(
+            method_option=maya_proxy_export_query.get_method_option(),
+            script_option=maya_proxy_export_query.get_script_option(
+                file=maya_scene_src_file_path,
+                with_proxy_xarc=True,
+                #
+                user=user, time_tag=time_tag,
+            ),
+            job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
+                [
                     # maya-scene
-                    maya_scene_export = ddl_methods.DdlRsvTaskMethodRunner(
-                        method_option=maya_scene_export_query.get_method_option(),
-                        script_option=maya_scene_export_query.get_script_option(
-                            file=maya_scene_src_file_path,
-                            create_scene_src=True,
-                            with_scene=True,
-                            with_texture_tx=True,
-                            #
-                            user=user, time_tag=time_tag,
-                        ),
-                        job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
-                            [
-                                # katana-geometry
-                                ddl_objects.DdlRsvTaskQuery(
-                                    'katana-geometry-export', rsv_task_properties
-                                ).get_method_option(),
-                                # katana-look
-                                ddl_objects.DdlRsvTaskQuery(
-                                    'katana-look-export', rsv_task_properties
-                                ).get_method_option(),
-                            ]
-                        )
-                    )
-                    maya_scene_export.set_run_with_deadline()
-                    #
-                    maya_look_export_query = ddl_objects.DdlRsvTaskQuery(
+                    ddl_objects.DdlRsvTaskQuery(
+                        'maya-scene-export', rsv_task_properties
+                    ).get_method_option(),
+                    # maya-look-export
+                    ddl_objects.DdlRsvTaskQuery(
                         'maya-look-export', rsv_task_properties
-                    )
-                    #
-                    maya_look_export = ddl_methods.DdlRsvTaskMethodRunner(
-                        method_option=maya_look_export_query.get_method_option(),
-                        script_option=maya_look_export_query.get_script_option(
-                            file=maya_scene_src_file_path,
-                            with_look_ass=True,
-                            with_texture_tx=True,
-                            #
-                            user=user, time_tag=time_tag,
-                        ),
-                        job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
-                            [
-                                # maya-scene
-                                maya_scene_export_query.get_method_option(),
-                            ]
-                        )
-                    )
-                    maya_look_export.set_run_with_deadline()
+                    ).get_method_option(),
+                ]
+            )
+        )
+        maya_proxy_export.set_run_with_deadline()

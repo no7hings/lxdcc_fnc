@@ -23,9 +23,9 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         import lxmaya.fnc.comparers as mya_fnc_comparers
         #
-        task_properties = self.task_properties
+        rsv_task_properties = self.task_properties
         #
-        root = task_properties.get('dcc.root')
+        root = rsv_task_properties.get('dcc.root')
         #
         sub_root = '{}/hi'.format(root)
         #
@@ -40,7 +40,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 index=0
             )
         else:
-            rsv_asset_geometry_opt = rsv_operators.RsvAssetGeometryQuery(self.task_properties)
+            rsv_asset_geometry_opt = rsv_operators.RsvAssetGeometryQuery(rsv_task_properties)
             latest_model_geometry_usd_hi_file_path = rsv_asset_geometry_opt.get_usd_model_hi_file()
             #
             file_paths_1 = []
@@ -124,9 +124,9 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         import lxmaya.dcc.dcc_operators as mya_dcc_operators
         #
-        task_properties = self.task_properties
+        rsv_task_properties = self.task_properties
         #
-        root = task_properties.get('dcc.root')
+        root = rsv_task_properties.get('dcc.root')
         #
         sub_root = '{}/hi'.format(root)
         #
@@ -163,8 +163,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         rsv_task_properties = self.task_properties
         #
-        user = utl_core.System.get_user_name()
-        time_tag = utl_core.System.get_time_tag()
+        user = rsv_task_properties.get('user') or utl_core.System.get_user_name()
+        time_tag = rsv_task_properties.get('time_tag') or utl_core.System.get_time_tag()
         #
         branch = rsv_task_properties.get('branch')
         step = rsv_task_properties.get('step')

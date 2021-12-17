@@ -25,8 +25,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         rsv_task_properties = self.task_properties
         #
-        user = utl_core.System.get_user_name()
-        time_tag = utl_core.System.get_time_tag()
+        user = rsv_task_properties.get('user') or utl_core.System.get_user_name()
+        time_tag = rsv_task_properties.get('time_tag') or utl_core.System.get_time_tag()
         #
         branch = rsv_task_properties.get('branch')
         step = rsv_task_properties.get('step')

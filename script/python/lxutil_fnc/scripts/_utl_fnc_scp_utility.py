@@ -94,10 +94,15 @@ def set_asset_publish_by_maya_scene_src(option):
     #
     maya_scene_src_file_path = option_opt.get('file')
     #
+    user = option_opt.get('user') or bsc_core.SystemMtd.get_user_name()
+    time_tag = option_opt.get('time_tag') or bsc_core.SystemMtd.get_time_tag()
+    #
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(maya_scene_src_file_path)
     if rsv_task_properties:
         rsv_task_properties.set('option.version', rsv_task_properties.get('version'))
+        rsv_task_properties.set('user', user)
+        rsv_task_properties.set('time_tag', time_tag)
         methods_loader = utl_fnc_objects.TaskMethodsLoader(rsv_task_properties)
         entity_path = methods_loader.get_entity_obj_path()
         method_paths = methods_loader.get_entity_method_obj_paths(entity_path)
@@ -148,10 +153,16 @@ def set_asset_publish_by_katana_scene_src(option):
     option_opt = bsc_core.KeywordArgumentsOpt(option)
     #
     katana_scene_src_file_path = option_opt.get('file')
+    #
+    user = option_opt.get('user') or bsc_core.SystemMtd.get_user_name()
+    time_tag = option_opt.get('time_tag') or bsc_core.SystemMtd.get_time_tag()
+    #
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(katana_scene_src_file_path)
     if rsv_task_properties:
         rsv_task_properties.set('option.version', rsv_task_properties.get('version'))
+        rsv_task_properties.set('user', user)
+        rsv_task_properties.set('time_tag', time_tag)
         methods_loader = utl_fnc_objects.TaskMethodsLoader(rsv_task_properties)
         entity_path = methods_loader.get_entity_obj_path()
         method_paths = methods_loader.get_entity_method_obj_paths(entity_path)

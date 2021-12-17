@@ -136,7 +136,7 @@ def set_asset_usd_set_export(task_properties):
             look_properties_file_dict = asset_usd_rsv_query.get_look_properties_file_dict(
                 version=version
             )
-            element_names = bsc_core.StorageZipFileOpt(look_klf_file_path).get_element_names()
+            element_names = bsc_core.ZipFileOpt(look_klf_file_path).get_element_names()
             look_pass_names = [os.path.splitext(i)[0] for i in fnmatch.filter(element_names, '*.klf')]
             if look_pass_names:
                 utl_objects.DotUsdaFile(
