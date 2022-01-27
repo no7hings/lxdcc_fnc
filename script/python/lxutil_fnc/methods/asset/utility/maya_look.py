@@ -73,7 +73,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                                     if stg_texture.get_is_tgt_ext('.tx') is False:
                                         file_paths_1.append(stg_texture.path)
                                     #
-                                    if stg_texture.get_is_exists_as_tgt_ext('.tx'):
+                                    if stg_texture.get_is_exists_as_tgt_ext('.tx') is False:
                                         file_paths_2.append(stg_texture.path)
                                 #
                                 if bsc_core.TextOpt(file_path).get_is_contain_chinese() is True:
@@ -204,6 +204,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 self.__set_katana_cfx_look_export(user, time_tag)
                 self.__set_katana_render_export_(user, time_tag)
                 #
+                self.__set_maya_look_preview_export_(user, time_tag)
+                #
                 self.__set_maya_look_import_(user, time_tag)
 
     def __set_maya_look_export_(self, user, time_tag):
@@ -230,7 +232,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 file=maya_scene_src_file_path,
                 with_look_ass=True,
                 with_look_properties_usd=False,
-                with_look_preview_yml=True,
+                with_look_yml=True,
                 with_texture=True,
                 #
                 user=user, time_tag=time_tag,
@@ -240,17 +242,76 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 file=maya_scene_src_file_path,
                 with_look_ass=True,
                 with_look_properties_usd=False,
-                with_look_preview_yml=True,
+                with_look_yml=True,
                 with_texture_tx=True,
                 #
                 user=user, time_tag=time_tag,
             )
         #
-        maya_look_export = ddl_methods.DdlRsvTaskMethodRunner(
+        maya_look_export = ddl_methods.RsvTaskHookExecutor(
             method_option=maya_look_export_query.get_method_option(),
             script_option=maya_scene_export_script_option
         )
         maya_look_export.set_run_with_deadline()
+
+    def __set_maya_look_preview_export_(self, user, time_tag):
+        import lxutil.dcc.dcc_objects as utl_dcc_objects
+        #
+        import lxresolver.commands as rsv_commands
+        #
+        from lxdeadline import ddl_core
+        #
+        import lxdeadline.objects as ddl_objects
+        #
+        import lxdeadline.methods as ddl_methods
+        #
+        resolver = rsv_commands.get_resolver()
+        #
+        rsv_task_properties = self.task_properties
+        task = rsv_task_properties.get('task')
+        if task in ['surfacing']:
+            if rsv_task_properties:
+                project = rsv_task_properties.get('project')
+                asset = rsv_task_properties.get('asset')
+                #
+                look_preview_task = resolver.get_rsv_task(
+                    project=project, asset=asset, step='srf', task='srf_anishading'
+                )
+                #
+                scene_src_maya_file_unit = look_preview_task.get_rsv_unit(
+                    keyword='asset-maya-scene-src-file'
+                )
+                scene_src_maya_file_path = scene_src_maya_file_unit.get_result(
+                    version='new'
+                )
+                #
+                utl_dcc_objects.OsFile(scene_src_maya_file_path).set_directory_create()
+                #
+                maya_look_preview_export_query = ddl_objects.DdlRsvTaskQuery(
+                    'maya-look-preview-export', rsv_task_properties
+                )
+                #
+                maya_look_preview_export = ddl_methods.RsvTaskHookExecutor(
+                    method_option=maya_look_preview_export_query.get_method_option(),
+                    script_option=maya_look_preview_export_query.get_script_option(
+                        file=scene_src_maya_file_path,
+                        #
+                        create_scene_src=True,
+                        with_scene=True,
+                        with_work_scene_src=True,
+                        #
+                        user=user, time_tag=time_tag
+                    ),
+                    job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
+                        [
+                            # usd-export
+                            ddl_objects.DdlRsvTaskQuery(
+                                'usd-export', rsv_task_properties
+                            ).get_method_option(),
+                        ]
+                    )
+                )
+                maya_look_preview_export.set_run_with_deadline()
 
     def __set_maya_proxy_export_(self, user, time_tag):
         from lxdeadline import ddl_core
@@ -273,7 +334,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             'maya-proxy-export', rsv_task_properties
         )
         #
-        maya_proxy_export = ddl_methods.DdlRsvTaskMethodRunner(
+        maya_proxy_export = ddl_methods.RsvTaskHookExecutor(
             method_option=maya_proxy_export_query.get_method_option(),
             script_option=maya_proxy_export_query.get_script_option(
                 file=maya_scene_src_file_path,
@@ -312,7 +373,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             'katana-scene-export', rsv_task_properties
         )
         #
-        katana_scene_export = ddl_methods.DdlRsvTaskMethodRunner(
+        katana_scene_export = ddl_methods.RsvTaskHookExecutor(
             method_option=katana_scene_export_query.get_method_option(),
             script_option=katana_scene_export_query.get_script_option(
                 file=katana_scene_src_file_path,
@@ -341,7 +402,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             'katana-look-export', rsv_task_properties
         )
         #
-        katana_look_export = ddl_methods.DdlRsvTaskMethodRunner(
+        katana_look_export = ddl_methods.RsvTaskHookExecutor(
             method_option=katana_look_export_query.get_method_option(),
             script_option=katana_look_export_query.get_script_option(
                 file=katana_scene_src_file_path,
@@ -387,7 +448,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 'katana-cfx-look-export', rsv_task_properties
             )
             #
-            katana_cfx_look_export = ddl_methods.DdlRsvTaskMethodRunner(
+            katana_cfx_look_export = ddl_methods.RsvTaskHookExecutor(
                 method_option=katana_cfx_look_export_query.get_method_option(),
                 script_option=katana_cfx_look_export_query.get_script_option(
                     file=surface_cfx_katana_scene_src_file_path,
@@ -421,7 +482,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 'maya-cfx-look-export', rsv_task_properties
             )
             #
-            maya_cfx_look_export = ddl_methods.DdlRsvTaskMethodRunner(
+            maya_cfx_look_export = ddl_methods.RsvTaskHookExecutor(
                 method_option=maya_cfx_look_export_query.get_method_option(),
                 script_option=maya_cfx_look_export_query.get_script_option(
                     file=surface_cfx_maya_scene_src_file_path,
@@ -463,7 +524,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             katana_render_export_query = ddl_objects.DdlRsvTaskQuery(
                 'katana-render-export', rsv_task_properties
             )
-            katana_render_export = ddl_methods.DdlRsvTaskMethodRunner(
+            katana_render_export = ddl_methods.RsvTaskHookExecutor(
                 method_option=katana_render_export_query.get_method_option(),
                 script_option=katana_render_export_query.get_script_option(
                     file=katana_scene_src_file_path,
@@ -522,7 +583,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                             'maya-look-import', rsv_task_properties
                         )
 
-                        i_maya_look_import = ddl_methods.DdlRsvTaskMethodRunner(
+                        i_maya_look_import = ddl_methods.RsvTaskHookExecutor(
                             method_option=i_maya_look_import_query.get_method_option(),
                             script_option=i_maya_look_import_query.get_script_option(
                                 file=i_maya_scene_src_file_path,

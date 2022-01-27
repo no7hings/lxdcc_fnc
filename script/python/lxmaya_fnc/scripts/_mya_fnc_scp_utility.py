@@ -2,6 +2,12 @@
 import sys
 
 
+def get_asset_scene_src_file_path(rsv_version):
+    return rsv_version.get_rsv_unit(
+        keyword='asset-maya-scene-src-file'
+    ).get_result(version=rsv_version.get('version'))
+
+
 def set_asset_workspace_create(rsv_task_properties):
     import lxmaya.fnc.builders as mya_fnc_builders
     #
@@ -45,6 +51,27 @@ def set_asset_cfx_workspace_create(rsv_task_properties):
         )
     ).set_run()
     return True
+
+
+def set_asset_look_preview_workspace_pre_create(rsv_task_properties):
+    import lxmaya.fnc.builders as mya_fnc_builders
+    #
+    project = rsv_task_properties.get('project')
+    asset = rsv_task_properties.get('asset')
+    #
+    mya_fnc_builders.AssetBuilder(
+        option=dict(
+            project=project,
+            asset=asset,
+            #
+            with_model_geometry=True,
+            #
+            with_surface_look=True,
+            with_surface_geometry_uv_map=True,
+            #
+            geometry_var_names=['hi'],
+        )
+    ).set_run()
 
 
 def set_export_check_run(rsv_task_properties):

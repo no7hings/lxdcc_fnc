@@ -5,7 +5,7 @@ from lxutil_prd import utl_prd_commands
 
 from lxmaya_prd import ma_prd_objects
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_dags
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_dags
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -62,5 +62,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
             for i in step_op.get_dcc_group_paths():
                 self.EXCEPT_DCC_PATHS.append(i)
         #
-        groups = _ma_dcc_obj_dags.Groups().get_custom_nodes(reference=False, exclude_paths=self.EXCEPT_DCC_PATHS)
+        groups = _mya_dcc_obj_dags.Groups().get_custom_nodes(reference=False, exclude_paths=self.EXCEPT_DCC_PATHS)
         self._set_objs_check_(groups)

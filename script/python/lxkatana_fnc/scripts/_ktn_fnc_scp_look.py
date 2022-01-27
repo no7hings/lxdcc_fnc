@@ -17,28 +17,35 @@ def set_look_export_by_any_scene_file(option):
     #
     option_opt = bsc_core.KeywordArgumentsOpt(option)
     #
-    scene_src_file_path = option_opt.get('file')
-    scene_src_file_path = utl_core.Path.set_map_to_platform(scene_src_file_path)
+    any_scene_file_path = option_opt.get('file')
+    any_scene_file_path = utl_core.Path.set_map_to_platform(any_scene_file_path)
     #
     resolver = rsv_commands.get_resolver()
-    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_src_file_path)
+    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
-        utl_core.Log.set_module_result_trace(
-            'katana-look-export',
-            'option="{}"'.format(option)
-        )
+        application = rsv_task_properties.get('application')
+        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        if application != 'katana':
+            any_scene_file_path = _ktn_fnc_scp_utility.get_asset_scene_src_file_path(rsv_version)
+            rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
         #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
-        #
-        force = option_opt.get('force') or False
-        #
         rsv_task_properties.set('user', user)
         rsv_task_properties.set('time_tag', time_tag)
         #
+        rsv_version.set('user', user)
+        rsv_version.set('time_tag', time_tag)
+        #
+        force = option_opt.get('force') or False
+        #
         branch = rsv_task_properties.get('branch')
         if branch == 'asset':
-            scene_src_file_obj = utl_dcc_objects.OsFile(scene_src_file_path)
+            utl_core.Log.set_module_result_trace(
+                'katana-look-export',
+                'option="{}"'.format(option)
+            )
+            scene_src_file_obj = utl_dcc_objects.OsFile(any_scene_file_path)
             if scene_src_file_obj.get_is_exists() is True:
                 stg_fnc_scripts.set_version_log_module_result_trace(
                     rsv_task_properties,
@@ -46,7 +53,7 @@ def set_look_export_by_any_scene_file(option):
                     'start'
                 )
                 #
-                ktn_dcc_objects.Scene.set_file_open(scene_src_file_path)
+                ktn_dcc_objects.Scene.set_file_open(any_scene_file_path)
                 # texture
                 with_texture = option_opt.get('with_texture') or False
                 if with_texture is True:
@@ -88,12 +95,12 @@ def set_look_export_by_any_scene_file(option):
             else:
                 utl_core.Log.set_module_warning_trace(
                     'katana-look-export-script-run',
-                    u'file="{}" is non-exists'.format(scene_src_file_path)
+                    u'file="{}" is non-exists'.format(any_scene_file_path)
                 )
     else:
         utl_core.Log.set_module_warning_trace(
             'katana-scene-look-export',
-            u'file="{}" is not available'.format(scene_src_file_path)
+            u'file="{}" is not available'.format(any_scene_file_path)
         )
 
 
@@ -148,6 +155,38 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
                             output_obj=i_look_pass_source_obj.path
                         )
                     ).set_run()
+
+
+def set_asset_work_look_ass_export(rsv_task_properties, force=False):
+    from lxutil import utl_core
+    #
+    import lxutil.dcc.dcc_objects as utl_dcc_objects
+    #
+    import lxkatana.fnc.exporters as ktn_fnc_exporters
+    #
+    import lxkatana.fnc.builders as ktn_fnc_builders
+    #
+    import lxresolver.operators as rsv_operators
+    #
+    version = rsv_task_properties.get('option.version')
+    #
+    default_look_ass_file_path = rsv_operators.RsvAssetLookQuery(rsv_task_properties).get_ass_work_file(
+        version=version
+    )
+    default_look_ass_file = utl_dcc_objects.OsFile(default_look_ass_file_path)
+    if default_look_ass_file.get_is_exists() is False or force is True:
+        ktn_fnc_exporters.LookAssExporter(
+            file_path=default_look_ass_file_path,
+            root='/master',
+            option=dict(
+                output_obj='/rootNode/default__property_assigns_merge'
+            )
+        ).set_run()
+    else:
+        utl_core.Log.set_module_warning_trace(
+            'katana-look-ass-export',
+            u'file="{}" is exists'.format(default_look_ass_file_path)
+        )
 
 
 def set_asset_look_klf_export(rsv_task_properties, force=False):

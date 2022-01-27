@@ -39,11 +39,11 @@ def set_render_export_by_any_scene_file(option):
                 maya_camera_export_query = ddl_objects.DdlRsvTaskQuery(
                     'maya-camera-export', rsv_task_properties
                 )
-                maya_camera_export = ddl_methods.DdlRsvTaskMethodRunner(
+                maya_camera_export = ddl_methods.RsvTaskHookExecutor(
                     method_option=maya_camera_export_query.get_method_option(),
                     script_option=maya_camera_export_query.get_script_option(
                         file=any_scene_file_path,
-                        with_camera_abc=True,
+                        with_camera_persp_abc=True,
                         #
                         td_enable=td_enable,
                         #
@@ -57,7 +57,7 @@ def set_render_export_by_any_scene_file(option):
                 katana_render_scene_create_query = ddl_objects.DdlRsvTaskQuery(
                     'katana-render-scene-create', rsv_task_properties
                 )
-                katana_render_scene_create = ddl_methods.DdlRsvTaskMethodRunner(
+                katana_render_scene_create = ddl_methods.RsvTaskHookExecutor(
                     method_option=katana_render_scene_create_query.get_method_option(),
                     script_option=katana_render_scene_create_query.get_script_option(
                         file=any_scene_file_path,
@@ -87,7 +87,7 @@ def set_render_export_by_any_scene_file(option):
                 katana_render_create_query = ddl_objects.DdlRsvTaskQuery(
                     'katana-render-create', rsv_task_properties
                 )
-                katana_render_create = ddl_methods.DdlRsvTaskMethodRunner(
+                katana_render_create = ddl_methods.RsvTaskHookExecutor(
                     method_option=katana_render_create_query.get_method_option(),
                     script_option=katana_render_create_query.get_script_option(
                         file=any_scene_file_path,
@@ -124,12 +124,18 @@ def set_render_scene_create_by_any_scene_file(option):
     #
     option_opt = bsc_core.KeywordArgumentsOpt(option)
     #
-    scene_src_file_path = option_opt.get('file')
-    scene_src_file_path = utl_core.Path.set_map_to_platform(scene_src_file_path)
+    any_scene_file_path = option_opt.get('file')
+    any_scene_file_path = utl_core.Path.set_map_to_platform(any_scene_file_path)
     #
     resolver = rsv_commands.get_resolver()
-    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_src_file_path)
+    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
+        application = rsv_task_properties.get('application')
+        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        if application != 'katana':
+            any_scene_file_path = _ktn_fnc_scp_utility.get_asset_scene_src_file_path(rsv_version)
+            rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
+        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         #
@@ -159,7 +165,8 @@ def set_asset_render_scene_create(rsv_task_properties):
     version = rsv_task_properties.get('version')
     #
     result = _ktn_fnc_scp_utility.set_asset_workspace_create(
-        rsv_task_properties, use_preview_look_pass=False
+        rsv_task_properties,
+        use_preview_look_pass=False
     )
     if result is True:
         ktn_fnc_builders.AssetBuilder(
@@ -250,6 +257,12 @@ def set_render_create_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
+        application = rsv_task_properties.get('application')
+        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        if application != 'katana':
+            any_scene_file_path = _ktn_fnc_scp_utility.get_asset_scene_src_file_path(rsv_version)
+            rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
+        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         rsv_task_properties.set('user', user)
@@ -298,7 +311,7 @@ def set_render_create_by_any_scene_file(option):
                 shotgun_render_export_query = ddl_objects.DdlRsvTaskQuery(
                     'shotgun-render-export', rsv_task_properties
                 )
-                shotgun_render_export = ddl_methods.DdlRsvTaskMethodRunner(
+                shotgun_render_export = ddl_methods.RsvTaskHookExecutor(
                     method_option=shotgun_render_export_query.get_method_option(),
                     script_option=shotgun_render_export_query.get_script_option(
                         file=any_scene_file_path,

@@ -29,8 +29,6 @@ def set_proxy_export_by_any_scene_file(option):
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         #
-        force = option_opt.get('force') or False
-        #
         rsv_task_properties.set('user', user)
         rsv_task_properties.set('time_tag', time_tag)
         #
@@ -113,14 +111,14 @@ def set_asset_proxy_export(rsv_task_properties):
             )
         )
         #
-        mya_fnc_exporters.PreviewExporter(
-            file_path=i_proxy_jpg_sub_file_path,
-            root=location,
-            option=dict(
-                use_render=False,
-                convert_to_dot_mov=False,
-            )
-        ).set_run()
+        # mya_fnc_exporters.PreviewExporter(
+        #     file_path=i_proxy_jpg_sub_file_path,
+        #     root=location,
+        #     option=dict(
+        #         use_render=False,
+        #         convert_to_dot_mov=False,
+        #     )
+        # ).set_run()
         #
         i_xarc_option['jpg_file'] = i_proxy_jpg_sub_file_path
         #
@@ -177,7 +175,7 @@ def set_asset_proxy_export(rsv_task_properties):
             #
             gpu_files.append(j_proxy_gpu_act_lod_file_path)
             #
-            ma_core.CmdMeshesOpt(mya_location).set_reduce_by(.5)
+            # ma_core.CmdMeshesOpt(mya_location).set_reduce_by(.5)
             #
             mya_fnc_exporters.ProxyGpuExporter(
                 option=dict(

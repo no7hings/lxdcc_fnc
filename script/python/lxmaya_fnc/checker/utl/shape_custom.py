@@ -1,7 +1,7 @@
 # coding:utf-8
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_dags
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_dags
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -34,5 +34,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
 
     def set_check_run(self):
         self.set_restore()
-        objs = _ma_dcc_obj_dags.Shapes().get_custom_nodes(reference=False)
+        objs = _mya_dcc_obj_dags.Shapes().get_custom_nodes(reference=False)
         self._set_objs_check_(objs)

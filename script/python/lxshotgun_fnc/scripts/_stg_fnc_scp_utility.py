@@ -16,9 +16,6 @@ def set_shotgun_export_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_src_file_path)
     if rsv_task_properties:
-        user = option_opt.get('user') or utl_core.System.get_user_name()
-        time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
-        #
         branch = rsv_task_properties.get('branch')
         if branch == 'asset':
             user = option_opt.get('user') or utl_core.System.get_user_name()
@@ -483,3 +480,104 @@ def set_asset_render_info_update(rsv_task_properties):
                 )
 
 
+def set_shotgun_create_by_any_scene_file(option):
+    from lxbasic import bsc_core
+    #
+    from lxutil import utl_core
+    #
+    import lxresolver.commands as rsv_commands
+    #
+    option_opt = bsc_core.KeywordArgumentsOpt(option)
+    #
+    any_scene_file_path = option_opt.get('file')
+    any_scene_file_path = utl_core.Path.set_map_to_platform(any_scene_file_path)
+    #
+    resolver = rsv_commands.get_resolver()
+    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
+    if rsv_task_properties:
+        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        #
+        user = option_opt.get('user') or utl_core.System.get_user_name()
+        time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
+        rsv_version.set('user', user)
+        rsv_version.set('time_tag', time_tag)
+        #
+        branch = rsv_task_properties.get('branch')
+        if branch == 'asset':
+            create_shotgun_task = option_opt.get('create_shotgun_version') or False
+            if create_shotgun_task is True:
+                set_asset_shotgun_task_create(rsv_version)
+            #
+            create_shotgun_version = option_opt.get('create_shotgun_version') or False
+            if create_shotgun_version is True:
+                set_asset_shot_version_create(rsv_version)
+    else:
+        utl_core.Log.set_module_warning_trace(
+            'shotgun-version create',
+            u'file="{}" is not available'.format(any_scene_file_path)
+        )
+
+
+def set_asset_shotgun_task_create(rsv_version):
+    from lxutil import utl_core
+    #
+    import lxshotgun.objects as stg_objects
+    #
+    kwargs = rsv_version.properties.value
+    #
+    stg_connector = stg_objects.StgConnector()
+    #
+    stg_project = stg_connector.get_stg_project(
+        **kwargs
+    )
+    if stg_project is not None:
+        stg_entity = stg_connector.get_stg_entity(
+            **kwargs
+        )
+        if stg_entity is None:
+            stg_connector.set_stg_entity_create(**kwargs)
+        #
+        stg_step = stg_connector.get_stg_step(
+            **kwargs
+        )
+        if stg_step is not None:
+            stg_task = stg_connector.get_stg_task(
+                **kwargs
+            )
+            if stg_task is None:
+                stg_connector.set_stg_task_create(
+                    **kwargs
+                )
+        else:
+            utl_core.Log.set_module_error_trace(
+                'shotgun-entity create',
+                'step="{}" is non-exists.'.format(kwargs['step'])
+            )
+    else:
+        utl_core.Log.set_module_error_trace(
+            'shotgun-entity create',
+            'project="{}" is non-exists.'.format(kwargs['project'])
+        )
+
+
+def set_asset_shot_version_create(rsv_version):
+    from lxutil import utl_core
+    #
+    import lxshotgun.objects as stg_objects
+    #
+    kwargs = rsv_version.properties.value
+    #
+    stg_connector = stg_objects.StgConnector()
+    #
+    stg_task = stg_connector.get_stg_task(
+        **kwargs
+    )
+    if stg_task is not None:
+        stg_connector.set_stg_version_create(
+            **kwargs
+        )
+    else:
+        utl_core.Log.set_module_error_trace(
+            'shotgun-entity create',
+            'task="{}" is non-exists.'.format(kwargs['task'])
+        )

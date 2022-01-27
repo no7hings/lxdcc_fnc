@@ -99,7 +99,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                     user=user, time_tag=time_tag,
                 )
             #
-            maya_scene_export = ddl_methods.DdlRsvTaskMethodRunner(
+            maya_scene_export = ddl_methods.RsvTaskHookExecutor(
                 method_option=maya_scene_export_query.get_method_option(),
                 script_option=maya_scene_export_script_option
             )

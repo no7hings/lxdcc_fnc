@@ -36,12 +36,12 @@ def set_camera_export_by_any_scene_file(option):
                 )
             ).set_run()
             #
-            with_camera_abc = option_opt.get('with_camera_abc') or False
-            if with_camera_abc is True:
-                set_asset_camera_abc_export(rsv_task_properties)
+            with_camera_persp_abc = option_opt.get('with_camera_persp_abc') or False
+            if with_camera_persp_abc is True:
+                set_asset_camera_persp_abc_export(rsv_task_properties)
 
 
-def set_asset_camera_abc_export(rsv_task_properties):
+def set_asset_camera_persp_abc_export(rsv_task_properties):
     import lxresolver.operators as rsv_operators
     #
     import lxmaya.fnc.importers as mya_fnc_importers

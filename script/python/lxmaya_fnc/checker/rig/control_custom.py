@@ -4,7 +4,7 @@ from maya import cmds
 
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_obj, _ma_dcc_obj_dag
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_obj, _mya_dcc_obj_dag
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -17,7 +17,7 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         error_node_paths = obj.get_source_node_paths(include_types=['animCurve'])
         error_sources = []
         for node_path in error_node_paths:
-            error_node = _ma_dcc_obj_obj.Node(node_path)
+            error_node = _mya_dcc_obj_obj.Node(node_path)
             error_sources.append(error_node)
         #
         is_error = self.set_error_obj_sources_update(obj, check_index, error_sources)
@@ -45,5 +45,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         self.set_restore()
         sets = cmds.ls('*_controllers_grp', type='objectSet', long=1)
         node_paths = [j for i in sets for j in cmds.sets(i, query=1) or [] if cmds.nodeType(j) == 'transform']
-        nodes = [_ma_dcc_obj_dag.Transform(i) for i in node_paths]
+        nodes = [_mya_dcc_obj_dag.Transform(i) for i in node_paths]
         self._set_objs_check_(nodes)

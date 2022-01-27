@@ -15,5 +15,10 @@ from ._mya_fnc_scp_render import *
 
 from ._mya_fnc_scp_proxy import *
 
+from ._mya_fnc_scp_light import *
+
+from ._mya_fnc_scp_xgen import *
+
+
 
 

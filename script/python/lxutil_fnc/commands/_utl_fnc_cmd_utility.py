@@ -76,7 +76,7 @@ def set_surface_system_workspace_create(task_properties):
                                 create_list.append(directory)
     #
     utl_core.Log.set_module_result_trace(
-        'system-workspace-create',
+        'system-workspace create',
         'start'
     )
     if create_list:
@@ -87,6 +87,6 @@ def set_surface_system_workspace_create(task_properties):
         utl_core.Progress.set_stop(ps)
     #
     utl_core.Log.set_module_result_trace(
-        'system-workspace-create',
+        'system-workspace create',
         'complete'
     )

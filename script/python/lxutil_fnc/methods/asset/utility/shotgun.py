@@ -58,7 +58,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
             shotgun_export_query = ddl_objects.DdlRsvTaskQuery(
                 'shotgun-export', rsv_task_properties
             )
-            shotgun_export = ddl_methods.DdlRsvTaskMethodRunner(
+            shotgun_export = ddl_methods.RsvTaskHookExecutor(
                 method_option=shotgun_export_query.get_method_option(),
                 script_option=shotgun_export_query.get_script_option(
                     file=dcc_scene_src_file_path,

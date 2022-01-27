@@ -3,7 +3,7 @@ from lxmaya import ma_core
 
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_obj, _mya_dcc_obj_objs
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_obj, _mya_dcc_obj_objs
 
 
 # /utl/node_custom
@@ -44,5 +44,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         unknown_nodes = _mya_dcc_obj_objs.UnknownNodes().get_custom_nodes(reference=False)
         self._set_objs_check_(unknown_nodes, [0])
         #
-        naming_overlapped_nodes = [_ma_dcc_obj_obj.Node(i) for i in ma_core._ma_get_override_node_paths_(reference=False)]
+        naming_overlapped_nodes = [_mya_dcc_obj_obj.Node(i) for i in ma_core._ma_get_override_node_paths_(reference=False)]
         self._set_objs_check_(naming_overlapped_nodes, [1])

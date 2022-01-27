@@ -1,7 +1,7 @@
 # coding:utf-8
 import sys
 
-from lxmaya_fnc.scripts import _mya_fnc_scp_utility, _mya_fnc_scp_texture
+from lxmaya_fnc.scripts import _mya_fnc_scp_utility, _mya_fnc_scp_texture, _mya_fnc_scp_scene
 
 
 def set_look_export_by_any_scene_file(option):
@@ -65,13 +65,13 @@ def set_look_export_by_any_scene_file(option):
                     if with_look_ass is True:
                         set_asset_look_ass_export(rsv_task_properties, force)
                     #
+                    with_look_yml = option_opt.get('with_look_yml') or False
+                    if with_look_yml is True:
+                        set_asset_look_preview_yml_export(rsv_task_properties)
+                    #
                     with_look_properties_usd = option_opt.get('with_look_properties_usd') or False
                     if with_look_properties_usd is True:
                         set_asset_look_properties_usd_export(rsv_task_properties)
-                    #
-                    with_look_preview_yml = option_opt.get('with_look_preview_yml') or False
-                    if with_look_preview_yml is True:
-                        set_asset_look_preview_yml_export(rsv_task_properties)
                     #
                     stg_fnc_scripts.set_version_log_module_result_trace(
                         rsv_task_properties,
@@ -365,3 +365,148 @@ def set_cfx_look_export_by_any_scene_file(option):
                         version=version
                     )
                     mya_dcc_objects.Scene.set_file_save_to(scene_file_path)
+
+
+def set_look_preview_export_by_any_scene_file(option):
+    # /l/prod/lib/publish/assets/chr/ast_cjd_didi/srf/surfacing/ast_cjd_didi.srf.surfacing.v001/scene/ast_cjd_didi.ma
+    from lxbasic import bsc_core
+    #
+    from lxutil import utl_core
+    #
+    import lxresolver.commands as rsv_commands
+    #
+    import lxutil.dcc.dcc_objects as utl_dcc_objects
+    #
+    import lxmaya.dcc.dcc_objects as mya_dcc_objects
+    #
+    import lxresolver.operators as rsv_operators
+    #
+    import lxshotgun_fnc.scripts as stg_fnc_scripts
+    # noinspection PyUnresolvedReferences
+    key = sys._getframe().f_code.co_name
+    #
+    option_opt = bsc_core.KeywordArgumentsOpt(option, default_option='with_look_ass=True')
+    #
+    any_scene_file_path = option_opt.get('file')
+    any_scene_file_path = utl_core.Path.set_map_to_platform(any_scene_file_path)
+    #
+    resolver = rsv_commands.get_resolver()
+    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
+    if rsv_task_properties:
+        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
+        #
+        user = option_opt.get('user') or utl_core.System.get_user_name()
+        time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
+        #
+        force = option_opt.get('force') or False
+        #
+        rsv_task_properties.set('user', user)
+        rsv_task_properties.set('time_tag', time_tag)
+        #
+        branch = rsv_task_properties.get('branch')
+        step = rsv_task_properties.get('step')
+        task = rsv_task_properties.get('task')
+        if branch == 'asset':
+            create_scene_src = option_opt.get('create_scene_src') or False
+            if create_scene_src is True:
+                mya_dcc_objects.Scene.set_file_new()
+                _mya_fnc_scp_utility.set_asset_look_preview_workspace_pre_create(rsv_task_properties)
+                #
+                mya_dcc_objects.Scene.set_file_save_to(
+                    any_scene_file_path
+                )
+            else:
+                any_scene_file = utl_dcc_objects.OsFile(any_scene_file_path)
+                if any_scene_file.get_is_exists() is True:
+                    mya_dcc_objects.Scene.set_file_open(any_scene_file_path)
+                else:
+                    raise IOError(
+                        utl_core.Log.set_module_error_trace(
+                            'look-preview-export',
+                            'file="{}" is non-exists'.format(any_scene_file_path)
+                        )
+                    )
+            #
+            set_asset_look_preview_workspace_post_create(rsv_task_properties)
+            #
+            with_scene = option_opt.get('with_scene') or False
+            if with_scene is True:
+                _mya_fnc_scp_scene.set_asset_scene_export(rsv_task_properties)
+            #
+            with_work_scene_src = option_opt.get('with_work_scene_src') or False
+            if with_work_scene_src is True:
+                set_asset_look_preview_work_scene_src_create(rsv_task_properties)
+
+
+def set_asset_look_preview_workspace_post_create(rsv_task_properties):
+    import lxresolver.commands as rsv_commands
+    #
+    import lxmaya.fnc.exporters as mya_fnc_exporters
+    #
+    import lxresolver.operators as rsv_operators
+    #
+    import lxmaya.dcc.dcc_objects as mya_dcc_objects
+    #
+    version = rsv_task_properties.get('version')
+    #
+    resolver = rsv_commands.get_resolver()
+    rsv_task = resolver.get_rsv_task(
+        **rsv_task_properties.value
+    )
+    #
+    texture_directory_unit = rsv_task.get_rsv_unit(
+        keyword='asset-texture-tgt-dir'
+    )
+    #
+    texture_directory_path = texture_directory_unit.get_result(version=version)
+    #
+    mya_fnc_exporters.LookPreviewExporter(
+        option=dict(
+            directory=texture_directory_path,
+            location='/master/hi',
+            resolution=2048,
+            aa_samples=3
+        )
+    ).set_run()
+    #
+    scene_src_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_maya_src_file(
+        version=version
+    )
+    mya_dcc_objects.Scene.set_file_save_to(scene_src_file_path)
+
+
+def set_asset_look_preview_work_scene_src_create(rsv_task_properties):
+    from lxbasic import bsc_core
+    #
+    from lxutil import utl_core
+    #
+    import lxresolver.operators as rsv_operators
+    #
+    import lxutil.dcc.dcc_objects as utl_dcc_objects
+    #
+    version = rsv_task_properties.get('version')
+    #
+    scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_maya_file(
+        version=version
+    )
+    latest_scene_src_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_work_maya_src_file(
+        version='latest'
+    )
+    if latest_scene_src_file_path:
+        if bsc_core.StorageLinkMtd.get_is_link_source_to(
+            scene_file_path, latest_scene_src_file_path
+        ) is False:
+            work_scene_src_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_work_maya_src_file(
+                version='new'
+            )
+            #
+            utl_dcc_objects.OsFile(
+                scene_file_path
+            ).set_link_to(work_scene_src_file_path)
+        else:
+            utl_core.Log.set_module_warning_trace(
+                'preview work-scene-src link create',
+                u'link="{}" >> "{}" is exists'.format(
+                    scene_file_path, latest_scene_src_file_path
+                )
+            )

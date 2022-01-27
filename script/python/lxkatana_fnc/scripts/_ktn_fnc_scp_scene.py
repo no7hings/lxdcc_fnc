@@ -18,16 +18,25 @@ def set_scene_export_by_any_scene_file(option):
     #
     option_opt = bsc_core.KeywordArgumentsOpt(option)
     #
-    scene_src_file_path = option_opt.get('file')
-    scene_src_file_path = utl_core.Path.set_map_to_platform(scene_src_file_path)
+    any_scene_file_path = option_opt.get('file')
+    any_scene_file_path = utl_core.Path.set_map_to_platform(any_scene_file_path)
     #
     resolver = rsv_commands.get_resolver()
-    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_src_file_path)
+    rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
+        application = rsv_task_properties.get('application')
+        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        if application != 'katana':
+            any_scene_file_path = _ktn_fnc_scp_utility.get_asset_scene_src_file_path(rsv_version)
+            rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
+        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         rsv_task_properties.set('user', user)
         rsv_task_properties.set('time_tag', time_tag)
+        #
+        rsv_version.set('user', user)
+        rsv_version.set('time_tag', time_tag)
         #
         branch = rsv_task_properties.get('branch')
         if branch == 'asset':
@@ -42,9 +51,10 @@ def set_scene_export_by_any_scene_file(option):
                 ktn_dcc_objects.Scene.set_file_new()
                 set_asset_scene_src_create(rsv_task_properties)
             #
-            scene_src_file = utl_dcc_objects.OsFile(scene_src_file_path)
+            scene_src_file = utl_dcc_objects.OsFile(any_scene_file_path)
             if scene_src_file.get_is_exists() is True:
-                ktn_dcc_objects.Scene.set_file_open(scene_src_file_path)
+                if create_scene_src is False:
+                    ktn_dcc_objects.Scene.set_file_open(any_scene_file_path)
                 # texture
                 with_texture = option_opt.get('with_texture') or False
                 if with_texture is True:
@@ -57,8 +67,7 @@ def set_scene_export_by_any_scene_file(option):
                 # scene
                 with_scene = option_opt.get('with_scene') or False
                 if with_scene is True:
-                    scene_file_path = set_asset_scene_export(rsv_task_properties)
-                    ktn_dcc_objects.Scene.set_file_open(scene_file_path)
+                    set_asset_scene_export(rsv_task_properties)
                 #
                 stg_fnc_scripts.set_version_log_module_result_trace(
                     rsv_task_properties,
@@ -68,12 +77,12 @@ def set_scene_export_by_any_scene_file(option):
             else:
                 utl_core.Log.set_module_warning_trace(
                     'katana-scene-export-script-run',
-                    u'file="{}" is non-exists'.format(scene_src_file_path)
+                    u'file="{}" is non-exists'.format(any_scene_file_path)
                 )
     else:
         utl_core.Log.set_module_warning_trace(
             'katana-scene-export-script-run',
-            u'file="{}" is not available'.format(scene_src_file_path)
+            u'file="{}" is not available'.format(any_scene_file_path)
         )
 
 
@@ -90,12 +99,12 @@ def set_asset_scene_src_create(rsv_task_properties):
         rsv_task_properties
     )
     if result is True:
-        scene_src_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_katana_src_file(
+        any_scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_katana_src_file(
             version=version
         )
-        ktn_dcc_objects.Scene.set_file_save_to(scene_src_file_path)
+        ktn_dcc_objects.Scene.set_file_save_to(any_scene_file_path)
         ktn_fnc_importers.LookAssImporter._set_pst_run_()
-        ktn_dcc_objects.Scene.set_file_save_to(scene_src_file_path)
+        ktn_dcc_objects.Scene.set_file_save()
 
 
 def set_asset_scene_export(rsv_task_properties):
@@ -107,7 +116,6 @@ def set_asset_scene_export(rsv_task_properties):
     root = rsv_task_properties.get('dcc.root')
     #
     scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_file(
-        workspace='publish',
         version=version
     )
     if scene_file_path:

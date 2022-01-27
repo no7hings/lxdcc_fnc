@@ -6,7 +6,7 @@ from lxutil import utl_core
 
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_scene
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_scene
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -91,5 +91,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
 
     def set_check_run(self):
         self.set_restore()
-        namespaces = _ma_dcc_obj_scene.Scene().get_namespaces()
+        namespaces = _mya_dcc_obj_scene.Scene().get_namespaces()
         self._set_objs_check_(namespaces)

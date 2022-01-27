@@ -6,7 +6,7 @@ from lxmaya_fnc import ma_fnc_abstract
 
 from lxutil_prd import utl_prd_commands
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_utility, _ma_dcc_obj_dag
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_utility, _mya_dcc_obj_dag
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -22,11 +22,11 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         error_obj_comps = []
         if step_group_paths:
             for sub_group_path in step_group_paths:
-                group = _ma_dcc_obj_dag.Group(sub_group_path)
+                group = _mya_dcc_obj_dag.Group(sub_group_path)
                 if group.get_is_exists() is False:
                     error_obj_comps.append(group)
         #
-        obj = _ma_dcc_obj_dag.Group(asset_group_path)
+        obj = _mya_dcc_obj_dag.Group(asset_group_path)
         is_error = self.set_error_obj_comps_update(obj, check_index, error_obj_comps)
         #
         outputs = []
@@ -38,7 +38,7 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
     def _check_method_1(self, *args):
         obj, check_index = args[:2]
         asset_group_path = obj.get_variant('self.asset.dcc_path')
-        base_group = _ma_dcc_obj_dag.Group('{}|base'.format(asset_group_path))
+        base_group = _mya_dcc_obj_dag.Group('{}|base'.format(asset_group_path))
         #
         is_error = base_group.get_is_exists() is True
         #
@@ -54,7 +54,7 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
     def set_check_run(self):
         self.set_restore()
         #
-        file_path = _ma_dcc_obj_utility.SceneFile.get_current_file_path()
+        file_path = _mya_dcc_obj_utility.SceneFile.get_current_file_path()
         self._scene = utl_prd_commands.set_scene_load_from_scene(file_path)
         #
         self._step_obj = self._scene.get_current_step_obj()

@@ -52,12 +52,18 @@ def set_geometry_export_by_any_scene_file(option):
                 with_geometry_uv_map_usd = option_opt.get('with_geometry_uv_map_usd') or False
                 if with_geometry_uv_map_usd is True:
                     import lxusd_fnc.scripts as usd_scripts
+                    #
                     usd_scripts.set_asset_geometry_uv_map_usd_export(rsv_task_properties)
                 #
                 with_geometry_uv_map_usd_link = option_opt.get('with_geometry_uv_map_usd_link') or False
                 if with_geometry_uv_map_usd_link is True:
                     import lxusd_fnc.scripts as usd_scripts
+                    #
                     usd_scripts.set_asset_geometry_uv_map_usd_link_export(rsv_task_properties)
+                #
+                with_geometry_abc = option_opt.get('with_geometry_abc') or False
+                if with_geometry_abc is True:
+                    pass
                 #
                 stg_fnc_scripts.set_version_log_module_result_trace(
                     rsv_task_properties,
@@ -72,6 +78,8 @@ def set_geometry_export_by_any_scene_file(option):
 
 
 def set_asset_geometry_usd_export(rsv_task_properties):
+    from lxbasic import bsc_core
+    #
     from lxutil import utl_core
     #
     import lxobj.core_objects as core_objects
@@ -92,45 +100,101 @@ def set_asset_geometry_usd_export(rsv_task_properties):
     root = rsv_task_properties.get('dcc.root')
     #
     asset_geometry_rsv_query = rsv_operators.RsvAssetGeometryQuery(rsv_task_properties)
-    var_names = ['hi', 'lo', 'shape', 'temp']
-    gp = utl_core.GuiProgressesRunner(maximum=len(var_names))
-    for i_sub_root_name in ['hi', 'lo', 'shape', 'temp']:
-        gp.set_update()
-        if workspace == 'work':
-            i_geometry_usd_var_file_path = asset_geometry_rsv_query.get_work_usd_var_file(
-                var=i_sub_root_name, version=version
-            )
-        elif workspace == 'publish':
-            i_geometry_usd_var_file_path = asset_geometry_rsv_query.get_usd_var_file_(
-                var_name=i_sub_root_name, version=version
-            )
-        else:
-            raise TypeError()
-        #
-        i_sub_root = '{}/{}'.format(root, i_sub_root_name)
-        i_sub_root_dag_path = core_objects.ObjDagPath(i_sub_root)
-        i_mya_sub_root_dag_path = i_sub_root_dag_path.set_translate_to(
-            pathsep=ma_configure.Util.OBJ_PATHSEP
-        )
-        #
-        sub_root_mya_obj = mya_dcc_objects.Group(i_mya_sub_root_dag_path.path)
-        if sub_root_mya_obj.get_is_exists() is True:
-            mya_fnc_exporters.GeometryUsdExporter_(
-                file_path=i_geometry_usd_var_file_path,
-                root=i_sub_root,
-                option=dict(
-                    default_prim_path=root,
-                    with_uv=True,
-                    with_mesh=True,
-                    use_override=False
+    #
+    mya_root_dat_opt = bsc_core.DccPathDagOpt(root).set_translate_to(
+        pathsep='|'
+    )
+    mya_root = mya_dcc_objects.Group(
+        mya_root_dat_opt.get_value()
+    )
+    if mya_root.get_is_exists() is True:
+        location_names = [i.name for i in mya_root.get_children()]
+        with utl_core.gui_progress(maximum=len(location_names)) as g_p:
+            for i_location_name in location_names:
+                g_p.set_update()
+                #
+                if workspace == 'work':
+                    i_geometry_usd_var_file_path = asset_geometry_rsv_query.get_work_usd_var_file(
+                        var=i_location_name, version=version
+                    )
+                elif workspace == 'publish':
+                    i_geometry_usd_var_file_path = asset_geometry_rsv_query.get_usd_var_file_(
+                        var_name=i_location_name, version=version
+                    )
+                else:
+                    raise TypeError()
+                #
+                i_location = '{}/{}'.format(root, i_location_name)
+                i_sub_root_dag_path = core_objects.ObjDagPath(i_location)
+                i_mya_sub_root_dag_path = i_sub_root_dag_path.set_translate_to(
+                    pathsep=ma_configure.Util.OBJ_PATHSEP
                 )
-            ).set_run()
-        else:
-            utl_core.Log.set_module_warning_trace(
-                key,
-                'obj="{}" is non-exists'.format(i_sub_root)
+                #
+                sub_root_mya_obj = mya_dcc_objects.Group(i_mya_sub_root_dag_path.path)
+                if sub_root_mya_obj.get_is_exists() is True:
+                    mya_fnc_exporters.GeometryUsdExporter_(
+                        file_path=i_geometry_usd_var_file_path,
+                        root=i_location,
+                        option=dict(
+                            default_prim_path=root,
+                            with_uv=True,
+                            with_mesh=True,
+                            use_override=False
+                        )
+                    ).set_run()
+                else:
+                    utl_core.Log.set_module_warning_trace(
+                        key,
+                        'obj="{}" is non-exists'.format(i_location)
+                    )
+
+
+def set_asset_work_geometry_usd_export(rsv_task_properties):
+    from lxutil import utl_core
+    #
+    import lxresolver.commands as rsv_commands
+    #
+    import lxobj.core_objects as core_objects
+    #
+    import lxmaya.fnc.exporters as mya_fnc_exporters
+    #
+    from lxmaya import ma_configure
+    #
+    import lxmaya.dcc.dcc_objects as mya_dcc_objects
+    #
+    resolver = rsv_commands.get_resolver()
+    rsv_task = resolver.get_rsv_task(**rsv_task_properties.value)
+    #
+    version = rsv_task_properties.get('version')
+    #
+    root = rsv_task_properties.get('dcc.root')
+    #
+    var_names = ['hi', 'lo', 'shape', 'temp']
+    with utl_core.gui_progress(maximum=len(var_names)) as g_p:
+        for i_var_name in var_names:
+            g_p.set_update()
+            #
+            i_sub_root = '{}/{}'.format(root, i_var_name)
+            i_sub_root_dag_path = core_objects.ObjDagPath(i_sub_root)
+            i_mya_sub_root_dag_path = i_sub_root_dag_path.set_translate_to(
+                pathsep=ma_configure.Util.OBJ_PATHSEP
             )
-    gp.set_stop()
+            i_mya_sub_root = mya_dcc_objects.Group(i_mya_sub_root_dag_path.path)
+            if i_mya_sub_root.get_is_exists() is True:
+                i_geometry_usd_file_unit = rsv_task.get_rsv_unit(keyword='asset-work-geometry-usd-var-file')
+                i_geometry_usd_var_file_path = i_geometry_usd_file_unit.get_result(
+                    version=version, extend_variants=dict(var=i_var_name)
+                )
+                mya_fnc_exporters.GeometryUsdExporter_(
+                    file_path=i_geometry_usd_var_file_path,
+                    root=i_sub_root,
+                    option=dict(
+                        default_prim_path=root,
+                        with_uv=True,
+                        with_mesh=True,
+                        use_override=False
+                    )
+                ).set_run()
 
 
 def set_geometry_import_by_any_scene_file(option):
@@ -195,6 +259,7 @@ def set_asset_geometry_uv_maps_import(rsv_task_properties):
                     with_surface_geometry_uv_map=True,
                 )
             ).set_run()
+        #
         elif step in ['rig']:
             project = rsv_task_properties.get('project')
             asset = rsv_task_properties.get('asset')

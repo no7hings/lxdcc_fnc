@@ -4,9 +4,9 @@ from maya import cmds
 
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_obj, _ma_dcc_obj_dags
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_obj, _mya_dcc_obj_dags
 
-from lxmaya.modifiers import _ma_mdf_utility
+from lxmaya.modifiers import _mya_mdf_utility
 
 
 # dag/geometry
@@ -66,7 +66,7 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         error_node_paths = obj.get_history_paths()
         error_sources = []
         for node_path in error_node_paths:
-            error_node = _ma_dcc_obj_obj.Node(node_path)
+            error_node = _mya_dcc_obj_obj.Node(node_path)
             error_sources.append(error_node)
 
         is_error = self.set_error_obj_sources_update(obj, check_index, error_sources)
@@ -74,7 +74,7 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         outputs = []
         return outputs
     # noinspection PyMethodMayBeStatic
-    @_ma_mdf_utility.set_undo_mark_mdf
+    @_mya_mdf_utility.set_undo_mark_mdf
     def _repair_method_3(self, *args):
         obj = args[0]
         obj._set_path_update_()
@@ -83,5 +83,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
 
     def set_check_run(self):
         self.set_restore()
-        geometries = _ma_dcc_obj_dags.Geometries().get_custom_nodes(reference=False)
+        geometries = _mya_dcc_obj_dags.Geometries().get_custom_nodes(reference=False)
         self._set_objs_check_(geometries)

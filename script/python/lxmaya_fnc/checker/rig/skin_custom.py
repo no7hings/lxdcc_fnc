@@ -4,7 +4,7 @@ from maya import cmds
 
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_obj
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_obj
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -26,5 +26,5 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
 
     def set_check_run(self):
         self.set_restore()
-        nodes = [_ma_dcc_obj_obj.Node(i) for i in cmds.ls(type='skinCluster', long=1)]
+        nodes = [_mya_dcc_obj_obj.Node(i) for i in cmds.ls(type='skinCluster', long=1)]
         self._set_objs_check_(nodes)

@@ -1,6 +1,12 @@
 # coding:utf-8
 
 
+def get_asset_scene_src_file_path(rsv_version):
+    return rsv_version.get_rsv_unit(
+        keyword='asset-katana-scene-src-file'
+    ).get_result(version=rsv_version.get('version'))
+
+
 def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
     import os
     #
@@ -18,7 +24,13 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
     #
     branch = rsv_task_properties.get('branch')
     root = rsv_task_properties.get('dcc.root')
+    step = rsv_task_properties.get('setp')
     if branch == 'asset':
+        ass_import_option = {}
+        if step in ['mod']:
+            ass_import_option = dict(
+                with_visibilities=False,
+            )
         rsv_asset_look_query = rsv_operators.RsvAssetLookQuery(rsv_task_properties)
         current_look_ass_file_path = rsv_asset_look_query.get_ass_file()
         if current_look_ass_file_path:
@@ -49,6 +61,7 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
             ktn_fnc_importers.LookAssImporter(
                 file_path=current_look_ass_file_path,
                 root='/root/materials',
+                option=ass_import_option
             ).set_run()
             # other passes
             look_pass_names = []

@@ -20,7 +20,7 @@ def set_asset_texture_tx_export(task_properties, force=False):
     version = task_properties.get('version')
     if workspace in ['publish'] or force is True:
         # clear-unused-shader
-        mya_dcc_objects.Scene.set_unused_shader_clear()
+        mya_dcc_objects.Scene.set_unused_shaders_clear()
         #
         root = task_properties.get('dcc.root')
         #
@@ -78,7 +78,7 @@ def set_asset_texture_export(task_properties, force=False):
     version = task_properties.get('version')
     if workspace in ['publish'] or force is True:
         # clear-unused-shader
-        mya_dcc_objects.Scene.set_unused_shader_clear()
+        mya_dcc_objects.Scene.set_unused_shaders_clear()
         #
         root = task_properties.get('dcc.root')
         #

@@ -1,7 +1,7 @@
 # coding:utf-8
 from lxmaya_fnc import ma_fnc_abstract
 
-from lxmaya.dcc.dcc_objects import _ma_dcc_obj_obj, _mya_dcc_obj_objs
+from lxmaya.dcc.dcc_objects import _mya_dcc_obj_obj, _mya_dcc_obj_objs
 
 
 class Method(ma_fnc_abstract.AbsMyaChecker):
@@ -26,7 +26,7 @@ class Method(ma_fnc_abstract.AbsMyaChecker):
         self.set_restore()
 
         nodes = _mya_dcc_obj_objs.TemporaryNodes().get_custom_nodes(reference=False)
-        display_layers = [_ma_dcc_obj_obj.DisplayLayer(i) for i in self.DISPLAY_LAYER_PATHS]
+        display_layers = [_mya_dcc_obj_obj.DisplayLayer(i) for i in self.DISPLAY_LAYER_PATHS]
         self._white_paths = []
         for i in display_layers:
             for j in i.get_objs():

@@ -179,7 +179,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                         'katana-geometry-export', rsv_task_properties
                     )
                     #
-                    katana_geometry_exporter = ddl_methods.DdlRsvTaskMethodRunner(
+                    katana_geometry_exporter = ddl_methods.RsvTaskHookExecutor(
                         method_option=katana_geometry_export_query.get_method_option(),
                         script_option=katana_geometry_export_query.get_script_option(
                             file=katana_scene_src_file_path,
@@ -209,7 +209,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                                         i_maya_geometry_import_query = ddl_objects.DdlRsvTaskQuery(
                                             'maya-geometry-import', rsv_task_properties
                                         )
-                                        i_maya_geometry_import = ddl_methods.DdlRsvTaskMethodRunner(
+                                        i_maya_geometry_import = ddl_methods.RsvTaskHookExecutor(
                                             method_option=i_maya_geometry_import_query.get_method_option(),
                                             script_option=i_maya_geometry_import_query.get_script_option(
                                                 file=i_maya_scene_src_file_path,

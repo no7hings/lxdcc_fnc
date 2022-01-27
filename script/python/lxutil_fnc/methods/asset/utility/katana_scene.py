@@ -81,7 +81,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 'katana-scene-export', rsv_task_properties
             )
             #
-            katana_scene_export = ddl_methods.DdlRsvTaskMethodRunner(
+            katana_scene_export = ddl_methods.RsvTaskHookExecutor(
                 method_option=katana_scene_export_query.get_method_option(),
                 script_option=katana_scene_export_query.get_script_option(
                     file=katana_scene_src_file_path,
