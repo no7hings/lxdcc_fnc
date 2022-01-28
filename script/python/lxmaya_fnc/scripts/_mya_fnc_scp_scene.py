@@ -154,7 +154,7 @@ def set_asset_scene_export(rsv_task_properties):
         file_path=scene_file_path,
         root=root,
         option=dict(
-            with_xgen=True
+            with_xgen_collection=True
         )
     ).set_run()
     return scene_file_path

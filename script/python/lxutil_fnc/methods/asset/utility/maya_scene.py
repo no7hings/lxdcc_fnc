@@ -72,7 +72,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 #
                 mya_fnc_exporters.SceneExporter(
                     file_path=maya_scene_src_file_path,
-                    option=dict(with_xgen=True)
+                    option=dict(with_xgen_collection=True)
                 ).set_run()
             else:
                 pass

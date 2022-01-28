@@ -44,32 +44,40 @@ def set_xgen_export_by_any_scene_file(option):
             if with_xgen_grow_mesh_abc is True:
                 set_asset_xgen_grow_abc_export(rsv_version)
             #
-            with_xgen = option_opt.get('with_xgen') or False
-            if with_xgen is True:
-                set_asset_xgen_export(rsv_version)
+            with_xgen_collection = option_opt.get('with_xgen_collection') or False
+            if with_xgen_collection is True:
+                set_asset_xgen_collection_export(rsv_version)
 
 
 def set_asset_xgen_grow_abc_export(rsv_version):
     import lxmaya.fnc.exporters as mya_fnc_exporters
 
-    import lxmaya.dcc.dcc_objects as mya_dcc_objects
-
     root = rsv_version.get('dcc.root')
 
-    grow_mesh_directory_path = mya_dcc_objects.Scene.get_current_directory_path()
+    project_directory_path = rsv_version.get_directory_path()
+
+    xgen_collection_directory_unit = rsv_version.get_rsv_unit(keyword='asset-geometry-xgen-collection-dir')
+    xgen_collection_directory_path = xgen_collection_directory_unit.get_result(version=rsv_version.get('version'))
+
+    grow_mesh_directory_unit = rsv_version.get_rsv_unit(keyword='asset-geometry-xgen-glow-dir')
+    grow_mesh_directory_path = grow_mesh_directory_unit.get_result(version=rsv_version.get('version'))
 
     location = '{}/hair'.format(root)
 
     mya_fnc_exporters.XgenExporter(
         option=dict(
-            xgen_directory='',
+            project_directory=project_directory_path,
+            xgen_collection_directory=xgen_collection_directory_path,
             grow_mesh_directory=grow_mesh_directory_path,
+            #
             location=location,
+            #
+            with_xgen_collection=True, with_grow_mesh_abc=True,
         )
     ).set_run()
 
 
-def set_asset_xgen_export(rsv_version):
+def set_asset_xgen_collection_export(rsv_version):
     root = rsv_version.get('dcc.root')
 
 
