@@ -22,8 +22,6 @@ def set_render_scene_create_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_src_file_path)
     if rsv_task_properties:
-        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
-        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         rsv_task_properties.set('user', user)

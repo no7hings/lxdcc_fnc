@@ -27,8 +27,6 @@ def set_look_export_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_src_file_path)
     if rsv_task_properties:
-        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
-        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         #
@@ -38,51 +36,52 @@ def set_look_export_by_any_scene_file(option):
         rsv_task_properties.set('time_tag', time_tag)
         #
         branch = rsv_task_properties.get('branch')
-        step = rsv_task_properties.get('step')
-        task = rsv_task_properties.get('task')
         if branch == 'asset':
-            if step in ['mod', 'srf']:
-                scene_src_file_obj = utl_dcc_objects.OsFile(scene_src_file_path)
-                if scene_src_file_obj.get_is_exists() is True:
-                    stg_fnc_scripts.set_version_log_module_result_trace(
-                        rsv_task_properties,
-                        'maya-look-export',
-                        'start'
-                    )
-                    #
-                    mya_dcc_objects.Scene.set_file_open(scene_src_file_path)
-                    # texture
-                    with_texture = option_opt.get('with_texture') or False
-                    if with_texture is True:
-                        _mya_fnc_scp_texture.set_asset_texture_export(rsv_task_properties)
-                    else:
-                        # texture-tx
-                        with_texture_tx = option_opt.get('with_texture_tx') or False
-                        if with_texture_tx is True:
-                            _mya_fnc_scp_texture.set_asset_texture_tx_export(rsv_task_properties)
-                    #
-                    with_look_ass = option_opt.get('with_look_ass') or False
-                    if with_look_ass is True:
-                        set_asset_look_ass_export(rsv_task_properties, force)
-                    #
-                    with_look_yml = option_opt.get('with_look_yml') or False
-                    if with_look_yml is True:
-                        set_asset_look_preview_yml_export(rsv_task_properties)
-                    #
-                    with_look_properties_usd = option_opt.get('with_look_properties_usd') or False
-                    if with_look_properties_usd is True:
-                        set_asset_look_properties_usd_export(rsv_task_properties)
-                    #
-                    stg_fnc_scripts.set_version_log_module_result_trace(
-                        rsv_task_properties,
-                        'maya-look-export',
-                        'complete'
-                    )
+            scene_src_file = utl_dcc_objects.OsFile(scene_src_file_path)
+            if scene_src_file.get_is_exists() is True:
+                stg_fnc_scripts.set_version_log_module_result_trace(
+                    rsv_task_properties,
+                    'maya-look-export',
+                    'start'
+                )
+                #
+                mya_dcc_objects.Scene.set_file_open(scene_src_file_path)
+                #
+                _mya_fnc_scp_utility.set_export_check_run(
+                    rsv_task_properties
+                )
+                # texture
+                with_texture = option_opt.get('with_texture') or False
+                if with_texture is True:
+                    _mya_fnc_scp_texture.set_asset_texture_export(rsv_task_properties)
                 else:
-                    utl_core.Log.set_module_warning_trace(
-                        'maya-look-export-script-run',
-                        u'file="{}" is non-exists'.format(scene_src_file_path)
-                    )
+                    # texture-tx
+                    with_texture_tx = option_opt.get('with_texture_tx') or False
+                    if with_texture_tx is True:
+                        _mya_fnc_scp_texture.set_asset_texture_tx_export(rsv_task_properties)
+                #
+                with_look_ass = option_opt.get('with_look_ass') or False
+                if with_look_ass is True:
+                    set_asset_look_ass_export(rsv_task_properties, force)
+                #
+                with_look_yml = option_opt.get('with_look_yml') or False
+                if with_look_yml is True:
+                    set_asset_look_preview_yml_export(rsv_task_properties)
+                #
+                with_look_properties_usd = option_opt.get('with_look_properties_usd') or False
+                if with_look_properties_usd is True:
+                    set_asset_look_properties_usd_export(rsv_task_properties)
+                #
+                stg_fnc_scripts.set_version_log_module_result_trace(
+                    rsv_task_properties,
+                    'maya-look-export',
+                    'complete'
+                )
+            else:
+                utl_core.Log.set_module_warning_trace(
+                    'maya-look-export-script-run',
+                    u'file="{}" is non-exists'.format(scene_src_file_path)
+                )
     else:
         utl_core.Log.set_module_warning_trace(
             key,
@@ -254,8 +253,6 @@ def set_look_import_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_file_path)
     if rsv_task_properties:
-        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
-        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         rsv_task_properties.set('user', user)
@@ -326,8 +323,6 @@ def set_cfx_look_export_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
-        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
-        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         rsv_task_properties.set('user', user)
@@ -393,8 +388,6 @@ def set_look_preview_export_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
-        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
-        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         #

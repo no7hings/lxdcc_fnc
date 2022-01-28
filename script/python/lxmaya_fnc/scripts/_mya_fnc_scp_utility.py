@@ -86,19 +86,18 @@ def set_export_check_run(rsv_task_properties):
     dcc_pathsep = rsv_task_properties.get('dcc.pathsep')
     dcc_root = rsv_task_properties.get('dcc.root')
     #
-    dcc_root_dag_path = bsc_core.DccPathDagOpt(dcc_root)
-    mya_root_dag_path = dcc_root_dag_path.set_translate_to(
+    dcc_root_dag_opt = bsc_core.DccPathDagOpt(dcc_root)
+    mya_root_dag_opt = dcc_root_dag_opt.set_translate_to(
         pathsep=dcc_pathsep
     )
     #
-    if mya_dcc_objects.Group(mya_root_dag_path.value).get_is_exists() is False:
-        pass
-        # raise RuntimeError(
-        #     utl_core.Log.set_module_error_trace(
-        #         key,
-        #         'obj="{}" is non-exists'.format(dcc_root)
-        #     )
-        # )
+    if mya_dcc_objects.Group(mya_root_dag_opt.value).get_is_exists() is False:
+        raise RuntimeError(
+            utl_core.Log.set_module_error_trace(
+                key,
+                'obj="{}" is non-exists'.format(mya_root_dag_opt.value)
+            )
+        )
 
 
 def set_work_file_link_to_temporary(rsv_task_properties, keyword):

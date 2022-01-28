@@ -25,8 +25,6 @@ def set_geometry_export_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=scene_file_path)
     if rsv_task_properties:
-        _mya_fnc_scp_utility.set_export_check_run(rsv_task_properties)
-        #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
         rsv_task_properties.set('user', user)
@@ -34,42 +32,44 @@ def set_geometry_export_by_any_scene_file(option):
         #
         branch = rsv_task_properties.get('branch')
         if branch == 'asset':
-            step = rsv_task_properties.get('step')
-            if step in ['mod', 'srf']:
-                stg_fnc_scripts.set_version_log_module_result_trace(
-                    rsv_task_properties,
-                    'maya-geometry-export',
-                    'start'
-                )
+            stg_fnc_scripts.set_version_log_module_result_trace(
+                rsv_task_properties,
+                'maya-geometry-export',
+                'start'
+            )
+            #
+            mya_scene_file_path = rsv_task_properties.get('any_scene_file')
+            mya_dcc_objects.Scene.set_file_open(mya_scene_file_path)
+            #
+            _mya_fnc_scp_utility.set_export_check_run(
+                rsv_task_properties
+            )
+            #
+            with_geometry_usd = option_opt.get('with_geometry_usd') or False
+            if with_geometry_usd is True:
+                set_asset_geometry_usd_export(rsv_task_properties)
+            #
+            with_geometry_uv_map_usd = option_opt.get('with_geometry_uv_map_usd') or False
+            if with_geometry_uv_map_usd is True:
+                import lxusd_fnc.scripts as usd_scripts
                 #
-                mya_scene_file_path = rsv_task_properties.get('any_scene_file')
-                mya_dcc_objects.Scene.set_file_open(mya_scene_file_path)
+                usd_scripts.set_asset_geometry_uv_map_usd_export(rsv_task_properties)
+            #
+            with_geometry_uv_map_usd_link = option_opt.get('with_geometry_uv_map_usd_link') or False
+            if with_geometry_uv_map_usd_link is True:
+                import lxusd_fnc.scripts as usd_scripts
                 #
-                with_geometry_usd = option_opt.get('with_geometry_usd') or False
-                if with_geometry_usd is True:
-                    set_asset_geometry_usd_export(rsv_task_properties)
-                #
-                with_geometry_uv_map_usd = option_opt.get('with_geometry_uv_map_usd') or False
-                if with_geometry_uv_map_usd is True:
-                    import lxusd_fnc.scripts as usd_scripts
-                    #
-                    usd_scripts.set_asset_geometry_uv_map_usd_export(rsv_task_properties)
-                #
-                with_geometry_uv_map_usd_link = option_opt.get('with_geometry_uv_map_usd_link') or False
-                if with_geometry_uv_map_usd_link is True:
-                    import lxusd_fnc.scripts as usd_scripts
-                    #
-                    usd_scripts.set_asset_geometry_uv_map_usd_link_export(rsv_task_properties)
-                #
-                with_geometry_abc = option_opt.get('with_geometry_abc') or False
-                if with_geometry_abc is True:
-                    pass
-                #
-                stg_fnc_scripts.set_version_log_module_result_trace(
-                    rsv_task_properties,
-                    'maya-geometry-export',
-                    'complete'
-                )
+                usd_scripts.set_asset_geometry_uv_map_usd_link_export(rsv_task_properties)
+            #
+            with_geometry_abc = option_opt.get('with_geometry_abc') or False
+            if with_geometry_abc is True:
+                pass
+            #
+            stg_fnc_scripts.set_version_log_module_result_trace(
+                rsv_task_properties,
+                'maya-geometry-export',
+                'complete'
+            )
     else:
         utl_core.Log.set_module_warning_trace(
             key,
@@ -108,7 +108,8 @@ def set_asset_geometry_usd_export(rsv_task_properties):
         mya_root_dat_opt.get_value()
     )
     if mya_root.get_is_exists() is True:
-        location_names = [i.name for i in mya_root.get_children()]
+        # location_names = [i.name for i in mya_root.get_children()]
+        location_names = ['hi', 'shape', 'hair']
         with utl_core.gui_progress(maximum=len(location_names)) as g_p:
             for i_location_name in location_names:
                 g_p.set_update()

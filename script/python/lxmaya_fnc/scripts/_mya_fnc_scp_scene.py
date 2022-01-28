@@ -51,6 +51,10 @@ def set_scene_export_by_any_scene_file(option):
             if any_scene_file.get_is_exists() is True:
                 if create_scene_src is False:
                     mya_dcc_objects.Scene.set_file_open(any_scene_file_path)
+                #
+                _mya_fnc_scp_utility.set_export_check_run(
+                    rsv_task_properties
+                )
                 # texture
                 with_texture = option_opt.get('with_texture') or False
                 if with_texture is True:

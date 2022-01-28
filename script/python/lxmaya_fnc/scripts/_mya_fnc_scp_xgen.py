@@ -40,19 +40,22 @@ def set_xgen_export_by_any_scene_file(option):
                 'start'
             )
             #
-            with_xgen_grow_mesh_abc = option_opt.get('with_xgen_grow_mesh_abc') or False
-            if with_xgen_grow_mesh_abc is True:
-                set_asset_xgen_grow_abc_export(rsv_version)
-            #
-            with_xgen_collection = option_opt.get('with_xgen_collection') or False
-            if with_xgen_collection is True:
-                set_asset_xgen_collection_export(rsv_version)
+            with_xgen = option_opt.get('with_xgen') or False
+            if with_xgen is True:
+                set_asset_xgen_export(rsv_version)
 
 
-def set_asset_xgen_grow_abc_export(rsv_version):
+def set_asset_xgen_export(rsv_version):
+    import lxmaya.dcc.dcc_objects as mya_dcc_objects
+
     import lxmaya.fnc.exporters as mya_fnc_exporters
 
-    root = rsv_version.get('dcc.root')
+    root = '/master'
+
+    scene_file_unit = rsv_version.get_rsv_unit(keyword='asset-maya-scene-file')
+    scene_file_path = scene_file_unit.get_result(version=rsv_version.get('version'))
+
+    mya_dcc_objects.Scene.set_file_open(scene_file_path)
 
     project_directory_path = rsv_version.get_directory_path()
 
@@ -75,9 +78,5 @@ def set_asset_xgen_grow_abc_export(rsv_version):
             with_xgen_collection=True, with_grow_mesh_abc=True,
         )
     ).set_run()
-
-
-def set_asset_xgen_collection_export(rsv_version):
-    root = rsv_version.get('dcc.root')
 
 
