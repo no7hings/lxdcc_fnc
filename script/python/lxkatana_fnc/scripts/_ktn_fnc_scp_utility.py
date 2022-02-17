@@ -31,6 +31,7 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
             ass_import_option = dict(
                 with_visibilities=False,
             )
+        #
         rsv_asset_look_query = rsv_operators.RsvAssetLookQuery(rsv_task_properties)
         current_look_ass_file_path = rsv_asset_look_query.get_ass_file()
         if current_look_ass_file_path:

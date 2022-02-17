@@ -207,16 +207,16 @@ def set_asset_render_scene_create(rsv_task_properties):
         if n.get_is_exists() is True:
             n.get_port('arnold_render_settings.stats_file_enable').set(1)
             n.get_port('arnold_render_settings.stats_file').set(
-                '{}/<look-pass>.stats.####.json'.format(render_output_directory_path)
+                '{}/<camera>/<look-pass>.stats.####.json'.format(render_output_directory_path)
             )
             #
             n.get_port('arnold_render_settings.profile_file_enable').set(1)
             n.get_port('arnold_render_settings.profile_file').set(
-                '{}/<look-pass>.profile.####.json'.format(render_output_directory_path)
+                '{}/<camera>/<look-pass>.profile.####.json'.format(render_output_directory_path)
             )
-            n.get_port('lynxi_outputs.output_enable').set(1)
-            n.get_port('lynxi_outputs.render_output').set(
-                '{}/<look-pass>/<render-pass>.####.exr'.format(render_output_directory_path)
+            n.get_port('lynxi_settings.render_output_enable').set(1)
+            n.get_port('lynxi_settings.render_output').set(
+                '{}/<camera>/<look-pass>/<render-pass>.####.exr'.format(render_output_directory_path)
             )
         #
         n = ktn_dcc_objects.Node('light_rigs')

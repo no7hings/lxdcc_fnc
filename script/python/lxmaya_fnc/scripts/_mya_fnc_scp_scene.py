@@ -185,7 +185,7 @@ def set_asset_camera_yml_export(rsv_task_properties):
     ).set_run()
 
 
-def set_asset_camera_persp_abc_export(rsv_task_properties):
+def set_asset_camera_abc_persp_export(rsv_task_properties):
     import lxresolver.operators as rsv_operators
     #
     import lxmaya.fnc.exporters as mya_fnc_exporter
