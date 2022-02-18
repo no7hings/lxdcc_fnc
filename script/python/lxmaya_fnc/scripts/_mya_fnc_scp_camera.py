@@ -137,7 +137,7 @@ def set_asset_camera_main_abc_export(rsv_version, option):
     mya_fnc_exporters.CameraAbcExport(
         dict(
             file=camera_abc_file_path,
-            location='/cameras/main',
+            location='/camera_grp',
             frame=frame_range,
         )
     ).set_run()
