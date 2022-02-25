@@ -136,7 +136,7 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
         )
     #
     ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
-    look_pass_names = ktn_workspace.get_pass_names()
+    look_pass_names = ktn_workspace.get_look_pass_names()
     #
     for i_look_pass_name in look_pass_names:
         if i_look_pass_name != 'default':

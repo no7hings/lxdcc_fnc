@@ -74,7 +74,7 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
                             file=look_yml__surface_anm__file_path,
                             root=root
                         )
-                    ).get_pass_names()
+                    ).get_look_pass_names()
             else:
                 look_klf_file_path = rsv_asset_look_query.get_klf_file()
                 if look_klf_file_path:
@@ -87,7 +87,7 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
                     g_p.set_update()
                     #
                     if i_look_pass_name != 'default':
-                        ktn_workspace.set_pass_add(i_look_pass_name)
+                        ktn_workspace.set_look_pass_add(i_look_pass_name)
                         i_look_ass_file_path = rsv_asset_look_query.get_ass_sub_file(
                             look_pass=i_look_pass_name
                         )
@@ -156,14 +156,14 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
                         file=look_yml__surface_anm__file_path,
                         root=root
                     )
-                ).get_pass_names()
+                ).get_look_pass_names()
                 if look_pass_names:
                     g_p = utl_core.GuiProgressesRunner(maximum=len(look_pass_names))
                     for i_look_pass_name in look_pass_names:
                         g_p.set_update()
                         #
                         if i_look_pass_name != 'default':
-                            ktn_workspace.set_pass_add(i_look_pass_name)
+                            ktn_workspace.set_look_pass_add(i_look_pass_name)
                             i_look_ass__surface_anm__file_path = rsv_asset_look_query.get_ass_surface_anm_sub_file(
                                 look_pass=i_look_pass_name
                             )

@@ -195,7 +195,7 @@ def set_asset_render_scene_create(rsv_task_properties):
         utl_dcc_objects.OsDirectory_(render_output_directory_path).set_create()
         #
         ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
-        look_pass_names = ktn_workspace.get_pass_names()
+        look_pass_names = ktn_workspace.get_look_pass_names()
         for i_look_pass_name in look_pass_names:
             node = ktn_dcc_objects.Node('{}__render_outputs'.format(i_look_pass_name))
             if node.get_is_exists() is True:
@@ -284,7 +284,7 @@ def set_render_create_by_any_scene_file(option):
             ktn_workspace.set_render_resolution(width, height)
             ktn_dcc_objects.Scene.set_file_save()
             # katana render
-            look_pass_names = ktn_workspace.get_pass_names()
+            look_pass_names = ktn_workspace.get_look_pass_names()
             for i_look_pass_name in look_pass_names:
                 i_katana_scene_render_query = ddl_objects.DdlRsvTaskQuery(
                     'katana-render', rsv_task_properties

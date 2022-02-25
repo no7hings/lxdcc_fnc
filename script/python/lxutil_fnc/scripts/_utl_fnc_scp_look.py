@@ -69,7 +69,7 @@ def set_asset_look_properties_usd_export(rsv_task_properties):
                 file=look_yml__surface_anm__file_path,
                 root=dcc_root
             )
-        ).get_pass_names()
+        ).get_look_pass_names()
         for i_look_pass_name in look_pass_names:
             if i_look_pass_name not in ['default']:
                 i_look_ass_sub_file_path = rsv_asset_look_query.get_ass_sub_file(
