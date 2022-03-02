@@ -321,41 +321,41 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 look_preview_task = resolver.get_rsv_task(
                     project=project, asset=asset, step='srf', task='srf_anishading'
                 )
-                #
-                scene_src_maya_file_unit = look_preview_task.get_rsv_unit(
-                    keyword='asset-maya-scene-src-file'
-                )
-                scene_src_maya_file_path = scene_src_maya_file_unit.get_result(
-                    version='new'
-                )
-                #
-                utl_dcc_objects.OsFile(scene_src_maya_file_path).set_directory_create()
-                #
-                maya_look_export_query = ddl_objects.DdlRsvTaskQuery(
-                    'maya-look-preview-export', rsv_task_properties
-                )
-                #
-                maya_look_preview_export = ddl_methods.RsvTaskHookExecutor(
-                    method_option=maya_look_export_query.get_method_option(),
-                    script_option=maya_look_export_query.get_script_option(
-                        file=scene_src_maya_file_path,
-                        #
-                        create_scene_src=True,
-                        with_scene=True,
-                        with_work_scene_src=True,
-                        #
-                        user=user, time_tag=time_tag
-                    ),
-                    job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
-                        [
-                            # usd-export
-                            ddl_objects.DdlRsvTaskQuery(
-                                'usd-export', rsv_task_properties
-                            ).get_method_option(),
-                        ]
+                if look_preview_task is not None:
+                    scene_src_maya_file_unit = look_preview_task.get_rsv_unit(
+                        keyword='asset-maya-scene-src-file'
                     )
-                )
-                maya_look_preview_export.set_run_with_deadline()
+                    scene_src_maya_file_path = scene_src_maya_file_unit.get_result(
+                        version='new'
+                    )
+                    #
+                    utl_dcc_objects.OsFile(scene_src_maya_file_path).set_directory_create()
+                    #
+                    maya_look_export_query = ddl_objects.DdlRsvTaskQuery(
+                        'maya-look-preview-export', rsv_task_properties
+                    )
+                    #
+                    maya_look_preview_export = ddl_methods.RsvTaskHookExecutor(
+                        method_option=maya_look_export_query.get_method_option(),
+                        script_option=maya_look_export_query.get_script_option(
+                            file=scene_src_maya_file_path,
+                            #
+                            create_scene_src=True,
+                            with_scene=True,
+                            with_work_scene_src=True,
+                            #
+                            user=user, time_tag=time_tag
+                        ),
+                        job_dependencies=ddl_core.DdlCacheMtd.get_ddl_job_ids(
+                            [
+                                # usd-export
+                                ddl_objects.DdlRsvTaskQuery(
+                                    'usd-export', rsv_task_properties
+                                ).get_method_option(),
+                            ]
+                        )
+                    )
+                    maya_look_preview_export.set_run_with_deadline()
 
     def __set_maya_proxy_export_(self, user, time_tag):
         from lxdeadline import ddl_core
