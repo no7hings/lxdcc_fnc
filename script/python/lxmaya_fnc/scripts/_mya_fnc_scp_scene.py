@@ -205,17 +205,15 @@ def set_asset_model_scene_import(rsv_task_properties):
     import lxmaya.dcc.dcc_objects as mya_dcc_objects
     #
     branch = rsv_task_properties.get('branch')
-    step = rsv_task_properties.get('step')
     if branch == 'asset':
-        if step in ['mod', 'srf', 'rig']:
-            maya_scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_maya_file(
-                step='mod',
-                task='modeling',
-                workspace='publish',
-                version='latest'
-            )
-            if maya_scene_file_path:
-                mya_dcc_objects.Scene.set_file_import(maya_scene_file_path)
+        maya_scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_maya_file(
+            step='mod',
+            task='modeling',
+            workspace='publish',
+            version='latest'
+        )
+        if maya_scene_file_path:
+            mya_dcc_objects.Scene.set_file_import(maya_scene_file_path)
 
 
 def set_asset_scene_snapshot_preview_export(rsv_task_properties):
