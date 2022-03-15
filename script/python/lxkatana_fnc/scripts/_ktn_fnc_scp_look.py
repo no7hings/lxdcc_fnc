@@ -194,12 +194,21 @@ def set_asset_look_klf_export(rsv_task_properties, force=False):
     #
     import lxresolver.operators as rsv_operators
     #
+    import lxkatana.dcc.dcc_objects as ktn_dcc_objects
+    #
     version = rsv_task_properties.get('option.version')
     #
     look_klf_file_path = rsv_operators.RsvAssetLookQuery(rsv_task_properties).get_klf_file(
         version=version
     )
     asset_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+    #
+    ktn_dcc_objects.Node('rootNode').get_port('variables.camera').set('asset_free')
+    #
+    asset_geometries = ktn_dcc_objects.Node('asset__geometries')
+    if asset_geometries.get_is_exists() is True:
+        asset_geometries.get_port('lynxi_variants.look').set('asset-work')
+    #
     asset_workspace.set_look_klf_file_export(look_klf_file_path)
 
 
