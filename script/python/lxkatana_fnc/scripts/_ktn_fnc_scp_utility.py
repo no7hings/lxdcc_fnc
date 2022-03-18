@@ -22,6 +22,8 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
     #
     import lxkatana.fnc.importers as ktn_fnc_importers
     #
+    import lxkatana.fnc.creators as ktn_fnc_creators
+    #
     branch = rsv_task_properties.get('branch')
     root = rsv_task_properties.get('dcc.root')
     step = rsv_task_properties.get('setp')
@@ -36,28 +38,29 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
         current_look_ass_file_path = rsv_asset_look_query.get_ass_file()
         if current_look_ass_file_path:
             ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
-            ktn_workspace.set_workspace_create()
+            # ktn_workspace.set_workspace_create()
+            ktn_fnc_creators.LookWorkspaceCreator().set_run()
             # geometry
-            rsv_asset_geometry_query = rsv_operators.RsvAssetGeometryQuery(rsv_task_properties)
+            # rsv_asset_geometry_query = rsv_operators.RsvAssetGeometryQuery(rsv_task_properties)
             # model
-            current_geometry_usd_hi_file_path = rsv_asset_geometry_query.get_usd_hi_file()
-            if current_geometry_usd_hi_file_path:
-                ktn_workspace.set_geometry_usd_import(current_geometry_usd_hi_file_path)
+            # current_geometry_usd_hi_file_path = rsv_asset_geometry_query.get_usd_hi_file()
+            # if current_geometry_usd_hi_file_path:
+            #     ktn_workspace.set_geometry_usd_import(current_geometry_usd_hi_file_path)
             # groom
-            groom_geometry_xgen_file_args = rsv_asset_geometry_query.get_xgen_file_args()
-            if groom_geometry_xgen_file_args:
-                for i_groom_geometry_xgen_file_path, i_groom_geometry_xgen_extend_variants in groom_geometry_xgen_file_args:
-                    ktn_workspace.set_geometry_xgen_import(
-                        i_groom_geometry_xgen_file_path,
-                        i_groom_geometry_xgen_extend_variants
-                    )
+            # groom_geometry_xgen_file_args = rsv_asset_geometry_query.get_xgen_file_args()
+            # if groom_geometry_xgen_file_args:
+            #     for i_groom_geometry_xgen_file_path, i_groom_geometry_xgen_extend_variants in groom_geometry_xgen_file_args:
+            #         ktn_workspace.set_geometry_xgen_import(
+            #             i_groom_geometry_xgen_file_path,
+            #             i_groom_geometry_xgen_extend_variants
+            #         )
             # groom_geometry_usd_file_path = rsv_operators.RsvAssetUsdQuery(rsv_task_properties).get_groom_registry_file()
             # if groom_geometry_usd_file_path:
             #     ktn_workspace.set_groom_geometry_usd_import(groom_geometry_usd_file_path)
             # geometry-effect
-            effect_geometry_usd_file_path = rsv_operators.RsvAssetUsdQuery(rsv_task_properties).get_effect_registry_file()
-            if effect_geometry_usd_file_path:
-                ktn_workspace.set_effect_usd_import(effect_geometry_usd_file_path)
+            # effect_geometry_usd_file_path = rsv_operators.RsvAssetUsdQuery(rsv_task_properties).get_effect_registry_file()
+            # if effect_geometry_usd_file_path:
+            #     ktn_workspace.set_effect_usd_import(effect_geometry_usd_file_path)
             # default pass
             ktn_fnc_importers.LookAssImporter(
                 file_path=current_look_ass_file_path,

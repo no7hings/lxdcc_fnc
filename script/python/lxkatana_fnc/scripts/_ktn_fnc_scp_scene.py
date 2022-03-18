@@ -95,13 +95,14 @@ def set_asset_scene_src_create(rsv_task_properties):
     #
     version = rsv_task_properties.get('version')
     #
+    any_scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_katana_src_file(
+        version=version
+    )
+    ktn_dcc_objects.Scene.set_file_save_to(any_scene_file_path)
     result = _ktn_fnc_scp_utility.set_asset_workspace_create(
         rsv_task_properties
     )
     if result is True:
-        any_scene_file_path = rsv_operators.RsvAssetSceneQuery(rsv_task_properties).get_katana_src_file(
-            version=version
-        )
         ktn_dcc_objects.Scene.set_file_save_to(any_scene_file_path)
         ktn_fnc_importers.LookAssImporter._set_pst_run_()
         ktn_dcc_objects.Scene.set_file_save()
