@@ -77,7 +77,7 @@ def set_look_export_by_any_scene_file(option):
                 if with_look_klf is True:
                     stg_fnc_scripts.set_version_log_module_result_trace(
                         rsv_task_properties,
-                        'katana-look-klf-export',
+                        'katana-look-klf export',
                         'start'
                     )
                     set_asset_look_klf_export(rsv_task_properties, force)

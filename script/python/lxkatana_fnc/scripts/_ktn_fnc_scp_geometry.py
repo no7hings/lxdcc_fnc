@@ -76,7 +76,7 @@ def set_asset_geometry_usd_export(rsv_task_properties):
         version=version
     )
     #
-    geometry_work_surface_usd_file_path = ktn_fnc_builders.AssetWorkspaceBuilder().get_geometry_usd_surface_hi_file_path()
+    geometry_work_surface_usd_file_path = ktn_fnc_builders.AssetWorkspaceBuilder().get_geometry_uv_map_usd_source_file()
     if geometry_work_surface_usd_file_path:
         stg_fnc_scripts.set_version_log_module_result_trace(
             rsv_task_properties,
