@@ -230,8 +230,6 @@ def set_work_file_repair_batch_run(option):
     #
     from lxutil import utl_core
     #
-    import lxutil.dcc.dcc_objects as utl_dcc_objects
-    #
     import lxresolver.commands as rsv_commands
     #
     option_opt = bsc_core.KeywordArgumentsOpt(option)
@@ -260,8 +258,6 @@ def set_work_file_repair_batch_run(option):
 def set_work_file_repair(option):
     from lxbasic import bsc_core
     #
-    import lxutil_fnc.objects as utl_fnc_objects
-    #
     import lxresolver.commands as rsv_commands
     #
     import lxresolver.operators as rsv_operators
@@ -271,8 +267,6 @@ def set_work_file_repair(option):
     import lxutil.dcc.dcc_operators as utl_dcc_operators
     #
     import lxkatana.dcc.dcc_objects as ktn_dcc_objects
-    #
-    from lxkatana import commands
     #
     option_opt = bsc_core.KeywordArgumentsOpt(option)
     work_katana_scene_src_file_path = option_opt.get('file')
@@ -292,7 +286,5 @@ def set_work_file_repair(option):
                 )
             )
         ).set_copy_and_repath_to(work_texture_dir_Path)
-        #
-        commands.set_asset_work_set_usd_import(rsv_task_properties)
         #
         ktn_dcc_objects.Scene.set_file_save()
