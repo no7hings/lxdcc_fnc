@@ -131,7 +131,7 @@ def set_render_scene_create_by_any_scene_file(option):
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
         application = rsv_task_properties.get('application')
-        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        rsv_version = resolver.get_rsv_task_version(**rsv_task_properties.value)
         if application != 'katana':
             any_scene_file_path = _ktn_fnc_scp_utility.get_asset_scene_src_file_path(rsv_version)
             rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
@@ -258,7 +258,7 @@ def set_render_create_by_any_scene_file(option):
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
         application = rsv_task_properties.get('application')
-        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        rsv_version = resolver.get_rsv_task_version(**rsv_task_properties.value)
         if application != 'katana':
             any_scene_file_path = _ktn_fnc_scp_utility.get_asset_scene_src_file_path(rsv_version)
             rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)

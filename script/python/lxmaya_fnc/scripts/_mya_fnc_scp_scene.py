@@ -24,7 +24,7 @@ def set_scene_export_by_any_scene_file(option):
     resolver = rsv_commands.get_resolver()
     rsv_task_properties = resolver.get_task_properties_by_any_scene_file_path(file_path=any_scene_file_path)
     if rsv_task_properties:
-        rsv_version = resolver.get_rsv_version(**rsv_task_properties.value)
+        rsv_version = resolver.get_rsv_task_version(**rsv_task_properties.value)
         #
         user = option_opt.get('user') or utl_core.System.get_user_name()
         time_tag = option_opt.get('time_tag') or utl_core.System.get_time_tag()
