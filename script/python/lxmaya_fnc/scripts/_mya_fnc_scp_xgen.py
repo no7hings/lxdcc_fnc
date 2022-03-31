@@ -40,8 +40,8 @@ def set_xgen_export_by_any_scene_file(option):
                 'start'
             )
             #
-            with_xgen = option_opt.get('with_xgen') or False
-            if with_xgen is True:
+            with_hair_xgen = option_opt.get('with_hair_xgen') or False
+            if with_hair_xgen is True:
                 set_asset_xgen_export(rsv_version)
 
 
@@ -69,7 +69,7 @@ def set_asset_xgen_export(rsv_version):
 
     mya_fnc_exporters.XgenExporter(
         option=dict(
-            project_directory=project_directory_path,
+            xgen_project_directory=project_directory_path,
             xgen_collection_directory=xgen_collection_directory_path,
             grow_mesh_directory=grow_mesh_directory_path,
             #
