@@ -256,7 +256,7 @@ def set_asset_component_usd_create(rsv_version):
     step = rsv_version.get('step')
     #
     usd_directory_unit = rsv_version.get_rsv_unit(
-        keyword='asset-comp-usd-dir'
+        keyword='asset-component-usd-dir'
     )
     #
     usd_directory_path = usd_directory_unit.get_result(version=rsv_version.get('version'))

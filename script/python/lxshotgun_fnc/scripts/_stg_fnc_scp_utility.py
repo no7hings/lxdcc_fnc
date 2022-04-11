@@ -369,7 +369,7 @@ def set_asset_look_pass_update(rsv_task_properties):
             #
             i_warnings = i_stats_file_opt.get_warnings()
             i_stg_look_pass_query.set(
-                'sg_render_warnings', '\n'.join(i_warnings)
+                'sg_render_warnings', u'\n'.join(i_warnings)
             )
 
 

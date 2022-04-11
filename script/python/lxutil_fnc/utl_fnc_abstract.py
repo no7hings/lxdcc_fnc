@@ -158,7 +158,7 @@ class AbsCheckerLoader(AbsFncLoaderDef):
         _ = self._descriptions or []
         for index in range(len(_)):
             lis.append(self.get_gui_description_at(index))
-        return '\n'.join(lis)
+        return u'\n'.join(lis)
 
     def get_gui_description_at(self, index):
         lis = []
@@ -190,7 +190,7 @@ class AbsCheckerLoader(AbsFncLoaderDef):
                 lis.append(
                     u'    - Ignore-enable: {}'.format(ignore_enable)
                 )
-        return '\n'.join(lis)
+        return u'\n'.join(lis)
 
     def get_ignore_enable_at(self, index):
         _ = self._descriptions

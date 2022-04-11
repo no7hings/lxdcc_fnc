@@ -28,15 +28,17 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
     root = rsv_task_properties.get('dcc.root')
     step = rsv_task_properties.get('setp')
     if branch == 'asset':
-        ass_import_option = {}
-        if step in ['mod']:
-            ass_import_option = dict(
-                with_visibilities=False,
-            )
         #
         rsv_asset_look_query = rsv_operators.RsvAssetLookQuery(rsv_task_properties)
         current_look_ass_file_path = rsv_asset_look_query.get_ass_file()
         if current_look_ass_file_path:
+            ass_import_option = dict(
+                file=current_look_ass_file_path,
+                location='/root/materials',
+            )
+            if step in ['mod']:
+                ass_import_option['with_visibilities'] = False
+            #
             ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
             # ktn_workspace.set_workspace_create()
             ktn_fnc_creators.LookWorkspaceCreator().set_run()
@@ -63,8 +65,6 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
             #     ktn_workspace.set_effect_usd_import(effect_geometry_usd_file_path)
             # default pass
             ktn_fnc_importers.LookAssImporter(
-                file_path=current_look_ass_file_path,
-                root='/root/materials',
                 option=ass_import_option
             ).set_run()
             # other passes
@@ -96,9 +96,9 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
                         )
                         if i_look_ass_file_path:
                             ktn_fnc_importers.LookAssImporter(
-                                file_path=i_look_ass_file_path,
-                                root='/root/materials',
                                 option=dict(
+                                    file=i_look_ass_file_path,
+                                    location='/root/materials',
                                     look_pass=i_look_pass_name
                                 )
                             ).set_run()
@@ -145,9 +145,9 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
                 ktn_workspace.set_effect_usd_import(effect_geometry_usd_file_path)
             # default pass
             ktn_fnc_importers.LookAssImporter(
-                file_path=look_ass__surface_anm__file_path,
-                root='/root/materials',
                 option=dict(
+                    file=look_ass__surface_anm__file_path,
+                    location='/root/materials',
                     auto_occlusion_assign=True
                 )
             ).set_run()
@@ -172,9 +172,9 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
                             )
                             if i_look_ass__surface_anm__file_path:
                                 ktn_fnc_importers.LookAssImporter(
-                                    file_path=i_look_ass__surface_anm__file_path,
-                                    root='/root/materials',
                                     option=dict(
+                                        file=i_look_ass__surface_anm__file_path,
+                                        location='/root/materials',
                                         look_pass=i_look_pass_name,
                                         auto_occlusion_assign=True
                                     )
@@ -203,8 +203,10 @@ def set_work_look_ass_import(rsv_task_properties):
     work_look_ass_file_obj = utl_dcc_objects.OsFile(work_look_ass_file_path)
     if work_look_ass_file_obj.get_is_exists() is True:
         ktn_fnc_importers.LookAssImporter(
-            file_path=work_look_ass_file_path,
-            root='/root/materials',
+            option=dict(
+                file=work_look_ass_file_path,
+                location='/root/materials',
+            ),
         ).set_run()
     else:
         utl_core.Log.set_module_warning_trace(
