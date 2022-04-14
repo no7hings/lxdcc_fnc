@@ -17,8 +17,8 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
     from lxutil import utl_core
     #
     import lxresolver.operators as rsv_operators
-    #
-    import lxkatana.fnc.builders as ktn_fnc_builders
+
+    import lxkatana.dcc.dcc_objects as ktn_dcc_objects
     #
     import lxkatana.fnc.importers as ktn_fnc_importers
     #
@@ -39,7 +39,7 @@ def set_asset_workspace_create(rsv_task_properties, use_preview_look_pass=True):
             if step in ['mod']:
                 ass_import_option['with_visibilities'] = False
             #
-            ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+            ktn_workspace = ktn_dcc_objects.AssetWorkspace()
             # ktn_workspace.set_workspace_create()
             ktn_fnc_creators.LookWorkspaceCreator().set_run()
             # geometry
@@ -116,8 +116,8 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
     from lxutil import utl_core
     #
     import lxresolver.operators as rsv_operators
-    #
-    import lxkatana.fnc.builders as ktn_fnc_builders
+
+    import lxkatana.dcc.dcc_objects as ktn_dcc_objects
     #
     import lxkatana.fnc.importers as ktn_fnc_importers
     #
@@ -127,7 +127,7 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
         rsv_asset_look_query = rsv_operators.RsvAssetLookQuery(rsv_task_properties)
         look_ass__surface_anm__file_path = rsv_asset_look_query.get_ass_surface_anm_file()
         if look_ass__surface_anm__file_path:
-            ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+            ktn_workspace = ktn_dcc_objects.AssetWorkspace()
             ktn_workspace.set_workspace_create()
             # geometry
             rsv_asset_geometry_query = rsv_operators.RsvAssetGeometryQuery(rsv_task_properties)
@@ -148,7 +148,7 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
                 option=dict(
                     file=look_ass__surface_anm__file_path,
                     location='/root/materials',
-                    auto_occlusion_assign=True
+                    auto_ambocc_assign=True
                 )
             ).set_run()
             # other passes
@@ -176,7 +176,7 @@ def set_asset_cfx_look_workspace_create(rsv_task_properties):
                                         file=i_look_ass__surface_anm__file_path,
                                         location='/root/materials',
                                         look_pass=i_look_pass_name,
-                                        auto_occlusion_assign=True
+                                        auto_ambocc_assign=True
                                     )
                                 ).set_run()
                     #

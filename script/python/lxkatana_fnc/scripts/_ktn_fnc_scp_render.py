@@ -194,7 +194,7 @@ def set_asset_render_scene_create(rsv_task_properties):
         )
         utl_dcc_objects.OsDirectory_(render_output_directory_path).set_create()
         #
-        ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+        ktn_workspace = ktn_dcc_objects.AssetWorkspace()
         look_pass_names = ktn_workspace.get_look_pass_names()
         for i_look_pass_name in look_pass_names:
             node = ktn_dcc_objects.Node('{}__render_outputs'.format(i_look_pass_name))
@@ -278,7 +278,7 @@ def set_render_create_by_any_scene_file(option):
             )
             #
             ktn_dcc_objects.Scene.set_file_open(render_katana_file_path)
-            ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+            ktn_workspace = ktn_dcc_objects.AssetWorkspace()
             width = option_opt.get('width') or 512
             height = option_opt.get('height') or 512
             ktn_workspace.set_render_resolution(width, height)

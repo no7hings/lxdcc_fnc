@@ -22,8 +22,6 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         #
         import lxresolver.operators as rsv_operators
         #
-        import lxkatana.fnc.builders as ktn_fnc_builders
-        #
         import lxkatana.dcc.dcc_objects as ktn_dcc_objects
         #
         import lxkatana.fnc.comparers as ktn_fnc_comparers
@@ -92,7 +90,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                             description=i_description
                         )
             #
-            surface_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+            surface_workspace = ktn_dcc_objects.AssetWorkspace()
             geometry_usd_check_raw = surface_workspace.get_geometry_usd_check_raw()
             if not geometry_usd_check_raw:
                 self.set_obj_check_result_at(obj.path, check_tag='error', index=1)
@@ -115,15 +113,15 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
 
     def _set_old_repair_run_(self):
         import lxusd.commands as usd_commands
-        #
-        import lxkatana.fnc.builders as ktn_fnc_builders
+
+        import lxkatana.dcc.dcc_objects as ktn_dcc_objects
         #
         task_properties = self.task_properties
         #
         results = usd_commands.set_asset_work_set_usda_create(task_properties)
         if results:
             work_set_usd_file_path = results[0]
-            ktn_fnc_builders.AssetWorkspaceBuilder().set_set_usd_import(
+            ktn_dcc_objects.AssetWorkspace().set_set_usd_import(
                 work_set_usd_file_path
             )
 

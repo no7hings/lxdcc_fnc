@@ -111,7 +111,7 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
     #
     import lxkatana.fnc.exporters as ktn_fnc_exporters
     #
-    import lxkatana.fnc.builders as ktn_fnc_builders
+    import lxkatana.dcc.dcc_objects as ktn_dcc_objects
     #
     import lxresolver.operators as rsv_operators
     #
@@ -135,7 +135,7 @@ def set_asset_look_ass_export(rsv_task_properties, force=False):
             u'file="{}" is exists'.format(default_look_ass_file_path)
         )
     #
-    ktn_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+    ktn_workspace = ktn_dcc_objects.AssetWorkspace()
     look_pass_names = ktn_workspace.get_look_pass_names()
     #
     for i_look_pass_name in look_pass_names:
@@ -201,7 +201,7 @@ def set_asset_look_klf_export(rsv_task_properties, force=False):
     look_klf_file_path = rsv_operators.RsvAssetLookQuery(rsv_task_properties).get_klf_file(
         version=version
     )
-    asset_workspace = ktn_fnc_builders.AssetWorkspaceBuilder()
+    asset_workspace = ktn_dcc_objects.AssetWorkspace()
     #
     ktn_dcc_objects.Node('rootNode').get_port('variables.camera').set('asset_free')
     #
