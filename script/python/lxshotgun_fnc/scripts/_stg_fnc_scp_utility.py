@@ -291,7 +291,7 @@ def set_asset_look_pass_update(rsv_task_properties):
         version=version, check_exists=True
     )
     for i_render_output_sub_directory_path in render_output_sub_directory_paths:
-        i_properties = render_output_sub_directory_unit.get_properties(
+        i_properties = render_output_sub_directory_unit.get_properties_by_result(
             i_render_output_sub_directory_path
         )
         i_beauty_image_file_path = '{}/beauty.####.exr'.format(i_render_output_sub_directory_path)

@@ -53,9 +53,9 @@ def set_asset_export_by_work_maya_scene_src_file(option):
     if rsv_task is not None:
         work_maya_scene_src_file = utl_dcc_objects.OsFile(work_scene_src_file_path)
         #
-        maya_scene_src_file_unit = rsv_task.get_rsv_unit(keyword='asset-maya-scene-src-file')
-        maya_scene_file_unit = rsv_task.get_rsv_unit(keyword='asset-maya-scene-file')
-        maya_scene_src_file_path = maya_scene_src_file_unit.get_result(version='latest')
+        maya_scene_src_file_rsv_unit = rsv_task.get_rsv_unit(keyword='asset-maya-scene-src-file')
+        maya_scene_file_rsv_unit = rsv_task.get_rsv_unit(keyword='asset-maya-scene-file')
+        maya_scene_src_file_path = maya_scene_src_file_rsv_unit.get_result(version='latest')
         if maya_scene_src_file_path is not None:
             maya_scene_src_file = utl_dcc_objects.OsFile(maya_scene_src_file_path)
             if work_maya_scene_src_file.get_is_same_timestamp_to(maya_scene_src_file) is True:
@@ -63,9 +63,11 @@ def set_asset_export_by_work_maya_scene_src_file(option):
                     'asset-maya-export',
                     u'file="{}" is non-changed'.format(maya_scene_src_file_path)
                 )
-                maya_scene_file_unit_path = maya_scene_file_unit.get_result(version=maya_scene_src_file_unit.get_latest_version())
+                maya_scene_file_path = maya_scene_file_rsv_unit.get_result(
+                    version=maya_scene_src_file_rsv_unit.get_latest_version()
+                )
                 if utl_dcc_objects.OsFile(
-                        maya_scene_file_unit_path
+                        maya_scene_file_path
                 ).get_is_exists_file() is True:
                     return
                 else:
@@ -74,9 +76,12 @@ def set_asset_export_by_work_maya_scene_src_file(option):
                     )
                 return
         #
-        new_version = rsv_task.get_new_version(workspace='publish')
+        version_rsv_unit = rsv_task.get_rsv_unit(
+            keyword='{branch}-version-dir'
+        )
+        new_version = version_rsv_unit.get_new_version()
         #
-        maya_scene_src_file_path = maya_scene_src_file_unit.get_result(version=new_version)
+        maya_scene_src_file_path = maya_scene_src_file_rsv_unit.get_result(version=new_version)
         work_maya_scene_src_file.set_copy_to_file(maya_scene_src_file_path)
         set_asset_publish_by_maya_scene_src(
             option='file={}'.format(maya_scene_src_file_path)
