@@ -71,8 +71,10 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 import lxmaya.fnc.exporters as mya_fnc_exporters
                 #
                 mya_fnc_exporters.SceneExporter(
-                    file_path=maya_scene_src_file_path,
-                    option=dict(with_xgen_collection=True)
+                    option=dict(
+                        file=maya_scene_src_file_path,
+                        with_xgen_collection=True
+                    )
                 ).set_run()
             else:
                 pass

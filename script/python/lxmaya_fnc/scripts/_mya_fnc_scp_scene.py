@@ -155,9 +155,9 @@ def set_asset_scene_export(rsv_task_properties):
         version=version
     )
     mya_fnc_exporters.SceneExporter(
-        file_path=scene_file_path,
-        root=root,
         option=dict(
+            file=scene_file_path,
+            location=root,
             with_xgen_collection=True
         )
     ).set_run()
