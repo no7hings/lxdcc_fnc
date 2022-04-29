@@ -29,16 +29,16 @@ def set_shotgun_export_by_any_scene_file(option):
                 'start'
             )
             #
-            with_version = option_opt.get('with_version') or False
-            if with_version is True:
+            with_shotgun_version = option_opt.get('with_shotgun_version') or False
+            if with_shotgun_version is True:
                 set_version_update(rsv_task_properties)
             #
             with_link = option_opt.get('with_link') or False
             if with_link is True:
                 set_link_export(rsv_task_properties)
             #
-            with_dependents = option_opt.get('with_dependents') or False
-            if with_dependents is True:
+            with_shotgun_dependency = option_opt.get('with_shotgun_dependency') or False
+            if with_shotgun_dependency is True:
                 set_dependents_export(rsv_task_properties)
             #
             set_version_log_module_result_trace(

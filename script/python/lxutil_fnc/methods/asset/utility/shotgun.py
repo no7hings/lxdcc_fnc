@@ -62,9 +62,9 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 method_option=shotgun_export_query.get_method_option(),
                 script_option=shotgun_export_query.get_script_option(
                     file=dcc_scene_src_file_path,
-                    with_version=True,
+                    with_shotgun_version=True,
                     with_link=True,
-                    with_dependents=True,
+                    with_shotgun_dependency=True,
                     #
                     user=user, time_tag=time_tag
                 ),
