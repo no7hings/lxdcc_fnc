@@ -101,11 +101,11 @@ def set_asset_geometry_usd_export(rsv_task_properties):
     #
     asset_geometry_rsv_query = rsv_operators.RsvAssetGeometryQuery(rsv_task_properties)
     #
-    mya_root_dat_opt = bsc_core.DccPathDagOpt(root).set_translate_to(
+    mya_root_dag_opt = bsc_core.DccPathDagOpt(root).set_translate_to(
         pathsep='|'
     )
     mya_root = mya_dcc_objects.Group(
-        mya_root_dat_opt.get_value()
+        mya_root_dag_opt.get_value()
     )
     if mya_root.get_is_exists() is True:
         # location_names = [i.name for i in mya_root.get_children()]
