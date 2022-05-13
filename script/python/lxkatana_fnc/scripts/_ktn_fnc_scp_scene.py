@@ -2,6 +2,10 @@
 from lxkatana_fnc.scripts import _ktn_fnc_scp_utility, _ktn_fnc_scp_texture
 
 
+def set_scene_new(file_path):
+    print file_path, 'AAAAA'
+
+
 # scene export
 def set_scene_export_by_any_scene_file(option):
     from lxbasic import bsc_core
