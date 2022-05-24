@@ -78,7 +78,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                     )
             #
             for k, v in texture_name_match_texture_path_dic.items():
-                if len(v) > 1:
+                if len(list(set(v))) > 1:
                     if k in texture_name_match_obj_dic:
                         error_objs = texture_name_match_obj_dic[k]
                         for i_error_obj in error_objs:

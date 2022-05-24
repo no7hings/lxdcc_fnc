@@ -44,7 +44,9 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 if objs:
                     gp = utl_core.GuiProgressesRunner(maximum=len(objs), label='texture-check-run')
                     name_base_dict = {}
-                    for obj in objs:
+                    texture_name_match_obj_dic = {}
+                    texture_name_match_texture_path_dic = {}
+                    for i_obj in objs:
                         gp.set_update()
                         #
                         file_paths_0 = []
@@ -52,12 +54,11 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                         file_paths_2 = []
                         file_paths_3 = []
                         file_paths_4 = []
-                        file_paths_5 = []
                         #
                         file_paths_6 = []
                         file_paths_7 = []
-                        for port_path, file_path in obj.reference_raw.items():
-                            stg_texture = utl_dcc_objects.OsTexture(file_path)
+                        for j_port_path, j_file_path in i_obj.reference_raw.items():
+                            stg_texture = utl_dcc_objects.OsTexture(j_file_path)
                             exists_files = stg_texture.get_exists_files()
                             #
                             if not exists_files:
@@ -76,53 +77,54 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                                     if stg_texture.get_is_exists_as_tgt_ext('.tx') is False:
                                         file_paths_2.append(stg_texture.path)
                                 #
-                                if bsc_core.TextOpt(file_path).get_is_contain_chinese() is True:
+                                if bsc_core.TextOpt(j_file_path).get_is_contain_chinese() is True:
                                     file_paths_3.append(stg_texture.path)
                                 #
-                                if bsc_core.TextOpt(file_path).get_is_contain_space() is True:
+                                if bsc_core.TextOpt(j_file_path).get_is_contain_space() is True:
                                     file_paths_4.append(stg_texture.path)
                                 #
                                 name_base = stg_texture.name_base
-                                if name_base in name_base_dict:
-                                    file_paths = name_base_dict[name_base]
-                                else:
-                                    file_paths = []
-                                    name_base_dict[name_base] = file_paths
                                 #
-                                if file_path not in file_paths:
-                                    file_paths.append(file_path)
-                                #
-                                if len(file_paths) > 1:
-                                    file_paths_5.extend(file_paths)
+                                texture_name_match_obj_dic.setdefault(
+                                    name_base, []
+                                ).append(i_obj)
+                                texture_name_match_texture_path_dic.setdefault(
+                                    name_base, []
+                                ).append(j_file_path)
                         #
                         if file_paths_0:
                             self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_0, check_tag='error', index=0
+                                i_obj.path, file_paths=file_paths_0, check_tag='error', index=0
                             )
                         if file_paths_1:
                             self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_1, check_tag='error', index=1
+                                i_obj.path, file_paths=file_paths_1, check_tag='error', index=1
                             )
                         if file_paths_2:
                             self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_2, check_tag='error', index=2
+                                i_obj.path, file_paths=file_paths_2, check_tag='error', index=2
                             )
                         if file_paths_3:
                             self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_3, check_tag='warning', index=3
+                                i_obj.path, file_paths=file_paths_3, check_tag='warning', index=3
                             )
                         if file_paths_4:
                             self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_4, check_tag='warning', index=4
-                            )
-                        if file_paths_5:
-                            self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_5, check_tag='warning', index=5
+                                i_obj.path, file_paths=file_paths_4, check_tag='warning', index=4
                             )
                         if file_paths_6:
                             self.set_obj_files_check_result_at(
-                                obj.path, file_paths=file_paths_5, check_tag='error', index=6
+                                i_obj.path, file_paths=file_paths_6, check_tag='error', index=6
                             )
+
+                    for k, v in texture_name_match_texture_path_dic.items():
+                        if len(list(set(v))) > 1:
+                            if k in texture_name_match_obj_dic:
+                                error_objs = texture_name_match_obj_dic[k]
+                                for i_error_obj in error_objs:
+                                    self.set_obj_files_check_result_at(
+                                        i_error_obj.path, file_paths=v, check_tag='error', index=5
+                                    )
                     #
                     gp.set_stop()
         else:
