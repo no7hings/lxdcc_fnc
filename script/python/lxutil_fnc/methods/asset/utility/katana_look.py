@@ -9,6 +9,8 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
     def set_check_run(self):
         from lxbasic import bsc_core
         #
+        import lxbasic.objects as bsc_objects
+        #
         import lxutil.dcc.dcc_objects as utl_dcc_objects
         #
         import lxkatana.dcc.dcc_objects as ktn_dcc_objects
@@ -18,6 +20,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
         exclude_paths = [i.path for i in ktn_dcc_objects.AndShaders.get_objs() if i.path.startswith('/rootNode/light_rigs')]
         objs = ktn_dcc_objects.TextureReferences().get_objs(exclude_paths=exclude_paths)
         if objs:
+            check_dict = {}
             texture_name_match_obj_dic = {}
             texture_name_match_texture_path_dic = {}
             ps = utl_core.Progress.set_create(len(objs))
@@ -29,32 +32,44 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                 file_paths_2 = []
                 file_paths_3 = []
                 file_paths_4 = []
+                i_check_results = [
+                    file_paths_0, file_paths_1, file_paths_2, file_paths_3, file_paths_4
+                ]
                 for j_port_path, j_file_path in i_obj.reference_raw.items():
                     stg_texture = utl_dcc_objects.OsTexture(j_file_path)
                     texture_tile_file_objs = stg_texture.get_exists_files()
-                    if not texture_tile_file_objs:
-                        file_paths_0.append(stg_texture.path)
+                    if j_file_path in check_dict:
+                        j_check_results = check_dict[j_file_path]
                     else:
-                        if stg_texture.get_is_tx_ext() is False:
-                            file_paths_1.append(stg_texture.path)
-                        #
-                        if stg_texture.get_tx_is_exists() is False:
-                            file_paths_2.append(stg_texture.path)
-                        #
-                        if bsc_core.TextOpt(j_file_path).get_is_contain_chinese() is True:
-                            file_paths_3.append(stg_texture.path)
-                        #
-                        if bsc_core.TextOpt(j_file_path).get_is_contain_space() is True:
-                            file_paths_4.append(stg_texture.path)
-                        #
-                        name_base = stg_texture.name_base
-                        #
-                        texture_name_match_obj_dic.setdefault(
-                            name_base, []
-                        ).append(i_obj)
-                        texture_name_match_texture_path_dic.setdefault(
-                            name_base, []
-                        ).append(j_file_path)
+                        j_check_results = [True]*5
+                        check_dict[j_file_path] = j_check_results
+                        if not texture_tile_file_objs:
+                            j_check_results[0] = False
+                        else:
+                            if stg_texture.get_is_tx_ext() is False:
+                                j_check_results[1] = False
+                            #
+                            if stg_texture.get_tx_is_exists() is False:
+                                j_check_results[2] = False
+                            #
+                            if bsc_core.TextOpt(j_file_path).get_is_contain_chinese() is True:
+                                j_check_results[3] = False
+                            #
+                            if bsc_core.TextOpt(j_file_path).get_is_contain_space() is True:
+                                j_check_results[4] = False
+                            #
+                            name_base = stg_texture.name_base
+                            #
+                            texture_name_match_obj_dic.setdefault(
+                                name_base, []
+                            ).append(i_obj)
+                            texture_name_match_texture_path_dic.setdefault(
+                                name_base, []
+                            ).append(j_file_path)
+                    #
+                    for index, k_check_result in enumerate(j_check_results):
+                        if k_check_result is False:
+                            i_check_results[index].append(j_file_path)
                 #
                 if file_paths_0:
                     self.set_obj_files_check_result_at(

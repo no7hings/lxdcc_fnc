@@ -453,7 +453,7 @@ def set_asset_look_preview_workspace_post_create(rsv_task_properties):
     #
     texture_directory_path = texture_directory_unit.get_result(version=version)
     #
-    mya_fnc_exporters.LookPreviewExporter(
+    mya_fnc_exporters.TextureBaker(
         option=dict(
             directory=texture_directory_path,
             location='/master/hi',

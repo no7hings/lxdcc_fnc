@@ -46,6 +46,7 @@ class Method(utl_fnc_obj_abs.AbsTaskMethod):
                     name_base_dict = {}
                     texture_name_match_obj_dic = {}
                     texture_name_match_texture_path_dic = {}
+                    #
                     for i_obj in objs:
                         gp.set_update()
                         #
