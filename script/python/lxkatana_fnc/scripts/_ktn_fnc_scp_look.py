@@ -190,7 +190,7 @@ def set_asset_work_look_ass_export(rsv_task_properties, force=False):
 
 
 def set_asset_look_klf_export(rsv_task_properties, force=False):
-    import lxkatana.fnc.builders as ktn_fnc_builders
+    from lxutil import utl_core
     #
     import lxresolver.operators as rsv_operators
     #
@@ -205,9 +205,17 @@ def set_asset_look_klf_export(rsv_task_properties, force=False):
     #
     ktn_dcc_objects.Node('rootNode').get_port('variables.camera').set('asset_free')
     #
-    asset_geometries = ktn_dcc_objects.Node('asset__geometries')
-    if asset_geometries.get_is_exists() is True:
-        asset_geometries.get_port('lynxi_variants.look').set('asset-work')
+    asset_geometries_dcc_node = ktn_dcc_objects.Node('asset__geometries')
+    if asset_geometries_dcc_node.get_is_exists() is True:
+        asset_geometries_dcc_node.get_port('lynxi_variants.look').set('asset-work')
+    else:
+        raise RuntimeError(
+            utl_core.Log.set_module_error_trace(
+                'obj="{}" is non-exists'.format(
+                    asset_geometries_dcc_node.path
+                )
+            )
+        )
     #
     asset_workspace.set_look_klf_file_export(look_klf_file_path)
 
